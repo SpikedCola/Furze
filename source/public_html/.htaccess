@@ -1,0 +1,11 @@
+Options -Indexes
+
+RewriteEngine on
+
+# rewrite rule for versioned files (assume mtime is 4 or more digits)
+RewriteRule ^(js|css)/(.+)\.(\d{4,})\.(js|css)$ $1/$2.$4 [L,NC]
+
+# strip php extension
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php

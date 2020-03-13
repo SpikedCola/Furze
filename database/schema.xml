@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 
+propel database:reverse to dump this from db.
+
+"cd c:\wamp\www\furze\source\classes\vendor\bin; propel build" 
+to build propel php files
+
+"cd c:\wamp\www\furze\source\classes; composer dump-autoload"
+to update composer autoloader (would be nice to use psr0 but couldnt figure it out)
+
+*** differences from running database:reverse 
+    - all tables phpName changed from plural to singular (eg. Episodes -> Episode)
+-->
+<database name="default" defaultIdMethod="native" defaultPhpNamingMethod="underscore">
+  <table name="episodes" idMethod="native" phpName="Episode">
+    <column name="tag" phpName="Tag" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="upload_date" phpName="UploadDate" type="DATE" required="true"/>
+    <column name="title" phpName="Title" type="LONGVARCHAR" required="true"/>
+    <column name="id" phpName="Id" type="VARCHAR" size="255" required="true"/>
+    <column name="description" phpName="Description" type="LONGVARCHAR" required="true"/>
+    <column name="processed" phpName="Processed" type="INTEGER" required="true" defaultValue="0"/>
+    <column name="music" phpName="Music" type="LONGVARCHAR"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
+    </vendor>
+  </table>
+</database>
