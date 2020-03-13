@@ -2,42 +2,37 @@
 
 namespace Base;
 
-use \Episode as ChildEpisode;
-use \EpisodeQuery as ChildEpisodeQuery;
 use \Song as ChildSong;
+use \SongLinkQuery as ChildSongLinkQuery;
 use \SongQuery as ChildSongQuery;
-use \DateTime;
 use \Exception;
 use \PDO;
-use Map\EpisodeTableMap;
-use Map\SongTableMap;
+use Map\SongLinkTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'episodes' table.
+ * Base class that represents a row from the 'song_links' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class Episode implements ActiveRecordInterface
+abstract class SongLink implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\EpisodeTableMap';
+    const TABLE_MAP = '\\Map\\SongLinkTableMap';
 
 
     /**
@@ -67,18 +62,25 @@ abstract class Episode implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the id field.
+     * The value for the tag field.
+     *
+     * @var        int
+     */
+    protected $tag;
+
+    /**
+     * The value for the song_id field.
+     *
+     * @var        int
+     */
+    protected $song_id;
+
+    /**
+     * The value for the url field.
      *
      * @var        string
      */
-    protected $id;
-
-    /**
-     * The value for the upload_date field.
-     *
-     * @var        DateTime
-     */
-    protected $upload_date;
+    protected $url;
 
     /**
      * The value for the title field.
@@ -88,32 +90,9 @@ abstract class Episode implements ActiveRecordInterface
     protected $title;
 
     /**
-     * The value for the description field.
-     *
-     * @var        string
+     * @var        ChildSong
      */
-    protected $description;
-
-    /**
-     * The value for the processed field.
-     *
-     * Note: this column has a database default value of: 0
-     * @var        int
-     */
-    protected $processed;
-
-    /**
-     * The value for the music field.
-     *
-     * @var        string
-     */
-    protected $music;
-
-    /**
-     * @var        ObjectCollection|ChildSong[] Collection to store aggregation of ChildSong objects.
-     */
-    protected $collSongs;
-    protected $collSongsPartial;
+    protected $aSong;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -124,29 +103,10 @@ abstract class Episode implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildSong[]
-     */
-    protected $songsScheduledForDeletion = null;
-
-    /**
-     * Applies default values to this object.
-     * This method should be called from the object's constructor (or
-     * equivalent initialization method).
-     * @see __construct()
-     */
-    public function applyDefaultValues()
-    {
-        $this->processed = 0;
-    }
-
-    /**
-     * Initializes internal state of Base\Episode object.
-     * @see applyDefaults()
+     * Initializes internal state of Base\SongLink object.
      */
     public function __construct()
     {
-        $this->applyDefaultValues();
     }
 
     /**
@@ -238,9 +198,9 @@ abstract class Episode implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Episode</code> instance.  If
-     * <code>obj</code> is an instance of <code>Episode</code>, delegates to
-     * <code>equals(Episode)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>SongLink</code> instance.  If
+     * <code>obj</code> is an instance of <code>SongLink</code>, delegates to
+     * <code>equals(SongLink)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -306,7 +266,7 @@ abstract class Episode implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|Episode The current object, for fluid interface
+     * @return $this|SongLink The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -368,33 +328,33 @@ abstract class Episode implements ActiveRecordInterface
     }
 
     /**
-     * Get the [id] column value.
+     * Get the [tag] column value.
      *
-     * @return string
+     * @return int
      */
-    public function getId()
+    public function getTag()
     {
-        return $this->id;
+        return $this->tag;
     }
 
     /**
-     * Get the [optionally formatted] temporal [upload_date] column value.
+     * Get the [song_id] column value.
      *
-     *
-     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
+     * @return int
      */
-    public function getUploadDate($format = NULL)
+    public function getSongId()
     {
-        if ($format === null) {
-            return $this->upload_date;
-        } else {
-            return $this->upload_date instanceof \DateTimeInterface ? $this->upload_date->format($format) : null;
-        }
+        return $this->song_id;
+    }
+
+    /**
+     * Get the [url] column value.
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
     }
 
     /**
@@ -408,80 +368,74 @@ abstract class Episode implements ActiveRecordInterface
     }
 
     /**
-     * Get the [description] column value.
+     * Set the value of [tag] column.
      *
-     * @return string
+     * @param int $v new value
+     * @return $this|\SongLink The current object (for fluent API support)
      */
-    public function getDescription()
+    public function setTag($v)
     {
-        return $this->description;
-    }
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->tag !== $v) {
+            $this->tag = $v;
+            $this->modifiedColumns[SongLinkTableMap::COL_TAG] = true;
+        }
+
+        return $this;
+    } // setTag()
 
     /**
-     * Get the [processed] column value.
+     * Set the value of [song_id] column.
      *
-     * @return int
+     * @param int $v new value
+     * @return $this|\SongLink The current object (for fluent API support)
      */
-    public function getProcessed()
+    public function setSongId($v)
     {
-        return $this->processed;
-    }
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->song_id !== $v) {
+            $this->song_id = $v;
+            $this->modifiedColumns[SongLinkTableMap::COL_SONG_ID] = true;
+        }
+
+        if ($this->aSong !== null && $this->aSong->getId() !== $v) {
+            $this->aSong = null;
+        }
+
+        return $this;
+    } // setSongId()
 
     /**
-     * Get the [music] column value.
-     *
-     * @return string
-     */
-    public function getMusic()
-    {
-        return $this->music;
-    }
-
-    /**
-     * Set the value of [id] column.
+     * Set the value of [url] column.
      *
      * @param string $v new value
-     * @return $this|\Episode The current object (for fluent API support)
+     * @return $this|\SongLink The current object (for fluent API support)
      */
-    public function setId($v)
+    public function setUrl($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->id !== $v) {
-            $this->id = $v;
-            $this->modifiedColumns[EpisodeTableMap::COL_ID] = true;
+        if ($this->url !== $v) {
+            $this->url = $v;
+            $this->modifiedColumns[SongLinkTableMap::COL_URL] = true;
         }
 
         return $this;
-    } // setId()
-
-    /**
-     * Sets the value of [upload_date] column to a normalized version of the date/time value specified.
-     *
-     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
-     *               Empty strings are treated as NULL.
-     * @return $this|\Episode The current object (for fluent API support)
-     */
-    public function setUploadDate($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->upload_date !== null || $dt !== null) {
-            if ($this->upload_date === null || $dt === null || $dt->format("Y-m-d") !== $this->upload_date->format("Y-m-d")) {
-                $this->upload_date = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[EpisodeTableMap::COL_UPLOAD_DATE] = true;
-            }
-        } // if either are not null
-
-        return $this;
-    } // setUploadDate()
+    } // setUrl()
 
     /**
      * Set the value of [title] column.
      *
      * @param string $v new value
-     * @return $this|\Episode The current object (for fluent API support)
+     * @return $this|\SongLink The current object (for fluent API support)
      */
     public function setTitle($v)
     {
@@ -491,71 +445,11 @@ abstract class Episode implements ActiveRecordInterface
 
         if ($this->title !== $v) {
             $this->title = $v;
-            $this->modifiedColumns[EpisodeTableMap::COL_TITLE] = true;
+            $this->modifiedColumns[SongLinkTableMap::COL_TITLE] = true;
         }
 
         return $this;
     } // setTitle()
-
-    /**
-     * Set the value of [description] column.
-     *
-     * @param string $v new value
-     * @return $this|\Episode The current object (for fluent API support)
-     */
-    public function setDescription($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->description !== $v) {
-            $this->description = $v;
-            $this->modifiedColumns[EpisodeTableMap::COL_DESCRIPTION] = true;
-        }
-
-        return $this;
-    } // setDescription()
-
-    /**
-     * Set the value of [processed] column.
-     *
-     * @param int $v new value
-     * @return $this|\Episode The current object (for fluent API support)
-     */
-    public function setProcessed($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->processed !== $v) {
-            $this->processed = $v;
-            $this->modifiedColumns[EpisodeTableMap::COL_PROCESSED] = true;
-        }
-
-        return $this;
-    } // setProcessed()
-
-    /**
-     * Set the value of [music] column.
-     *
-     * @param string $v new value
-     * @return $this|\Episode The current object (for fluent API support)
-     */
-    public function setMusic($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->music !== $v) {
-            $this->music = $v;
-            $this->modifiedColumns[EpisodeTableMap::COL_MUSIC] = true;
-        }
-
-        return $this;
-    } // setMusic()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -567,10 +461,6 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->processed !== 0) {
-                return false;
-            }
-
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -597,26 +487,17 @@ abstract class Episode implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : EpisodeTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->id = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : SongLinkTableMap::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->tag = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : EpisodeTableMap::translateFieldName('UploadDate', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00') {
-                $col = null;
-            }
-            $this->upload_date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : SongLinkTableMap::translateFieldName('SongId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->song_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EpisodeTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : SongLinkTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->url = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : SongLinkTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
             $this->title = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EpisodeTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->description = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EpisodeTableMap::translateFieldName('Processed', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->processed = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EpisodeTableMap::translateFieldName('Music', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->music = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -625,10 +506,10 @@ abstract class Episode implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = EpisodeTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = SongLinkTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\Episode'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\SongLink'), 0, $e);
         }
     }
 
@@ -647,6 +528,9 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aSong !== null && $this->song_id !== $this->aSong->getId()) {
+            $this->aSong = null;
+        }
     } // ensureConsistency
 
     /**
@@ -670,13 +554,13 @@ abstract class Episode implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(EpisodeTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(SongLinkTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildEpisodeQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildSongLinkQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -686,8 +570,7 @@ abstract class Episode implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collSongs = null;
-
+            $this->aSong = null;
         } // if (deep)
     }
 
@@ -697,8 +580,8 @@ abstract class Episode implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Episode::setDeleted()
-     * @see Episode::isDeleted()
+     * @see SongLink::setDeleted()
+     * @see SongLink::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -707,11 +590,11 @@ abstract class Episode implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(EpisodeTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(SongLinkTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildEpisodeQuery::create()
+            $deleteQuery = ChildSongLinkQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -746,7 +629,7 @@ abstract class Episode implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(EpisodeTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(SongLinkTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -765,7 +648,7 @@ abstract class Episode implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                EpisodeTableMap::addInstanceToPool($this);
+                SongLinkTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -791,6 +674,18 @@ abstract class Episode implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aSong !== null) {
+                if ($this->aSong->isModified() || $this->aSong->isNew()) {
+                    $affectedRows += $this->aSong->save($con);
+                }
+                $this->setSong($this->aSong);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -800,23 +695,6 @@ abstract class Episode implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
-            }
-
-            if ($this->songsScheduledForDeletion !== null) {
-                if (!$this->songsScheduledForDeletion->isEmpty()) {
-                    \SongQuery::create()
-                        ->filterByPrimaryKeys($this->songsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->songsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collSongs !== null) {
-                foreach ($this->collSongs as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -839,29 +717,27 @@ abstract class Episode implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
+        $this->modifiedColumns[SongLinkTableMap::COL_TAG] = true;
+        if (null !== $this->tag) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . SongLinkTableMap::COL_TAG . ')');
+        }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(EpisodeTableMap::COL_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'id';
+        if ($this->isColumnModified(SongLinkTableMap::COL_TAG)) {
+            $modifiedColumns[':p' . $index++]  = 'tag';
         }
-        if ($this->isColumnModified(EpisodeTableMap::COL_UPLOAD_DATE)) {
-            $modifiedColumns[':p' . $index++]  = 'upload_date';
+        if ($this->isColumnModified(SongLinkTableMap::COL_SONG_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'song_id';
         }
-        if ($this->isColumnModified(EpisodeTableMap::COL_TITLE)) {
+        if ($this->isColumnModified(SongLinkTableMap::COL_URL)) {
+            $modifiedColumns[':p' . $index++]  = 'url';
+        }
+        if ($this->isColumnModified(SongLinkTableMap::COL_TITLE)) {
             $modifiedColumns[':p' . $index++]  = 'title';
-        }
-        if ($this->isColumnModified(EpisodeTableMap::COL_DESCRIPTION)) {
-            $modifiedColumns[':p' . $index++]  = 'description';
-        }
-        if ($this->isColumnModified(EpisodeTableMap::COL_PROCESSED)) {
-            $modifiedColumns[':p' . $index++]  = 'processed';
-        }
-        if ($this->isColumnModified(EpisodeTableMap::COL_MUSIC)) {
-            $modifiedColumns[':p' . $index++]  = 'music';
         }
 
         $sql = sprintf(
-            'INSERT INTO episodes (%s) VALUES (%s)',
+            'INSERT INTO song_links (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -870,23 +746,17 @@ abstract class Episode implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'id':
-                        $stmt->bindValue($identifier, $this->id, PDO::PARAM_STR);
+                    case 'tag':
+                        $stmt->bindValue($identifier, $this->tag, PDO::PARAM_INT);
                         break;
-                    case 'upload_date':
-                        $stmt->bindValue($identifier, $this->upload_date ? $this->upload_date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                    case 'song_id':
+                        $stmt->bindValue($identifier, $this->song_id, PDO::PARAM_INT);
+                        break;
+                    case 'url':
+                        $stmt->bindValue($identifier, $this->url, PDO::PARAM_STR);
                         break;
                     case 'title':
                         $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
-                        break;
-                    case 'description':
-                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
-                        break;
-                    case 'processed':
-                        $stmt->bindValue($identifier, $this->processed, PDO::PARAM_INT);
-                        break;
-                    case 'music':
-                        $stmt->bindValue($identifier, $this->music, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -895,6 +765,13 @@ abstract class Episode implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
+
+        try {
+            $pk = $con->lastInsertId();
+        } catch (Exception $e) {
+            throw new PropelException('Unable to get autoincrement id.', 0, $e);
+        }
+        $this->setTag($pk);
 
         $this->setNew(false);
     }
@@ -927,7 +804,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = EpisodeTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = SongLinkTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -944,22 +821,16 @@ abstract class Episode implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getId();
+                return $this->getTag();
                 break;
             case 1:
-                return $this->getUploadDate();
+                return $this->getSongId();
                 break;
             case 2:
-                return $this->getTitle();
+                return $this->getUrl();
                 break;
             case 3:
-                return $this->getDescription();
-                break;
-            case 4:
-                return $this->getProcessed();
-                break;
-            case 5:
-                return $this->getMusic();
+                return $this->getTitle();
                 break;
             default:
                 return null;
@@ -985,43 +856,37 @@ abstract class Episode implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['Episode'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['SongLink'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Episode'][$this->hashCode()] = true;
-        $keys = EpisodeTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['SongLink'][$this->hashCode()] = true;
+        $keys = SongLinkTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getId(),
-            $keys[1] => $this->getUploadDate(),
-            $keys[2] => $this->getTitle(),
-            $keys[3] => $this->getDescription(),
-            $keys[4] => $this->getProcessed(),
-            $keys[5] => $this->getMusic(),
+            $keys[0] => $this->getTag(),
+            $keys[1] => $this->getSongId(),
+            $keys[2] => $this->getUrl(),
+            $keys[3] => $this->getTitle(),
         );
-        if ($result[$keys[1]] instanceof \DateTimeInterface) {
-            $result[$keys[1]] = $result[$keys[1]]->format('c');
-        }
-
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collSongs) {
+            if (null !== $this->aSong) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'songs';
+                        $key = 'song';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'songss';
+                        $key = 'songs';
                         break;
                     default:
-                        $key = 'Songs';
+                        $key = 'Song';
                 }
 
-                $result[$key] = $this->collSongs->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->aSong->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -1037,11 +902,11 @@ abstract class Episode implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\Episode
+     * @return $this|\SongLink
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = EpisodeTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = SongLinkTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1052,28 +917,22 @@ abstract class Episode implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\Episode
+     * @return $this|\SongLink
      */
     public function setByPosition($pos, $value)
     {
         switch ($pos) {
             case 0:
-                $this->setId($value);
+                $this->setTag($value);
                 break;
             case 1:
-                $this->setUploadDate($value);
+                $this->setSongId($value);
                 break;
             case 2:
-                $this->setTitle($value);
+                $this->setUrl($value);
                 break;
             case 3:
-                $this->setDescription($value);
-                break;
-            case 4:
-                $this->setProcessed($value);
-                break;
-            case 5:
-                $this->setMusic($value);
+                $this->setTitle($value);
                 break;
         } // switch()
 
@@ -1099,25 +958,19 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = EpisodeTableMap::getFieldNames($keyType);
+        $keys = SongLinkTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setId($arr[$keys[0]]);
+            $this->setTag($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setUploadDate($arr[$keys[1]]);
+            $this->setSongId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setTitle($arr[$keys[2]]);
+            $this->setUrl($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setDescription($arr[$keys[3]]);
-        }
-        if (array_key_exists($keys[4], $arr)) {
-            $this->setProcessed($arr[$keys[4]]);
-        }
-        if (array_key_exists($keys[5], $arr)) {
-            $this->setMusic($arr[$keys[5]]);
+            $this->setTitle($arr[$keys[3]]);
         }
     }
 
@@ -1138,7 +991,7 @@ abstract class Episode implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\Episode The current object, for fluid interface
+     * @return $this|\SongLink The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1158,25 +1011,19 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(EpisodeTableMap::DATABASE_NAME);
+        $criteria = new Criteria(SongLinkTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(EpisodeTableMap::COL_ID)) {
-            $criteria->add(EpisodeTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(SongLinkTableMap::COL_TAG)) {
+            $criteria->add(SongLinkTableMap::COL_TAG, $this->tag);
         }
-        if ($this->isColumnModified(EpisodeTableMap::COL_UPLOAD_DATE)) {
-            $criteria->add(EpisodeTableMap::COL_UPLOAD_DATE, $this->upload_date);
+        if ($this->isColumnModified(SongLinkTableMap::COL_SONG_ID)) {
+            $criteria->add(SongLinkTableMap::COL_SONG_ID, $this->song_id);
         }
-        if ($this->isColumnModified(EpisodeTableMap::COL_TITLE)) {
-            $criteria->add(EpisodeTableMap::COL_TITLE, $this->title);
+        if ($this->isColumnModified(SongLinkTableMap::COL_URL)) {
+            $criteria->add(SongLinkTableMap::COL_URL, $this->url);
         }
-        if ($this->isColumnModified(EpisodeTableMap::COL_DESCRIPTION)) {
-            $criteria->add(EpisodeTableMap::COL_DESCRIPTION, $this->description);
-        }
-        if ($this->isColumnModified(EpisodeTableMap::COL_PROCESSED)) {
-            $criteria->add(EpisodeTableMap::COL_PROCESSED, $this->processed);
-        }
-        if ($this->isColumnModified(EpisodeTableMap::COL_MUSIC)) {
-            $criteria->add(EpisodeTableMap::COL_MUSIC, $this->music);
+        if ($this->isColumnModified(SongLinkTableMap::COL_TITLE)) {
+            $criteria->add(SongLinkTableMap::COL_TITLE, $this->title);
         }
 
         return $criteria;
@@ -1194,8 +1041,8 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildEpisodeQuery::create();
-        $criteria->add(EpisodeTableMap::COL_ID, $this->id);
+        $criteria = ChildSongLinkQuery::create();
+        $criteria->add(SongLinkTableMap::COL_TAG, $this->tag);
 
         return $criteria;
     }
@@ -1208,7 +1055,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getId();
+        $validPk = null !== $this->getTag();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1224,22 +1071,22 @@ abstract class Episode implements ActiveRecordInterface
 
     /**
      * Returns the primary key for this object (row).
-     * @return string
+     * @return int
      */
     public function getPrimaryKey()
     {
-        return $this->getId();
+        return $this->getTag();
     }
 
     /**
-     * Generic method to set the primary key (id column).
+     * Generic method to set the primary key (tag column).
      *
-     * @param       string $key Primary key.
+     * @param       int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setId($key);
+        $this->setTag($key);
     }
 
     /**
@@ -1248,7 +1095,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getId();
+        return null === $this->getTag();
     }
 
     /**
@@ -1257,35 +1104,19 @@ abstract class Episode implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Episode (or compatible) type.
+     * @param      object $copyObj An object of \SongLink (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setId($this->getId());
-        $copyObj->setUploadDate($this->getUploadDate());
+        $copyObj->setSongId($this->getSongId());
+        $copyObj->setUrl($this->getUrl());
         $copyObj->setTitle($this->getTitle());
-        $copyObj->setDescription($this->getDescription());
-        $copyObj->setProcessed($this->getProcessed());
-        $copyObj->setMusic($this->getMusic());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getSongs() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addSong($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
         if ($makeNew) {
             $copyObj->setNew(true);
+            $copyObj->setTag(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1298,7 +1129,7 @@ abstract class Episode implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \Episode Clone of current object.
+     * @return \SongLink Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1311,246 +1142,55 @@ abstract class Episode implements ActiveRecordInterface
         return $copyObj;
     }
 
-
     /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
+     * Declares an association between this object and a ChildSong object.
      *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('Song' == $relationName) {
-            $this->initSongs();
-            return;
-        }
-    }
-
-    /**
-     * Clears out the collSongs collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addSongs()
-     */
-    public function clearSongs()
-    {
-        $this->collSongs = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collSongs collection loaded partially.
-     */
-    public function resetPartialSongs($v = true)
-    {
-        $this->collSongsPartial = $v;
-    }
-
-    /**
-     * Initializes the collSongs collection.
-     *
-     * By default this just sets the collSongs collection to an empty array (like clearcollSongs());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initSongs($overrideExisting = true)
-    {
-        if (null !== $this->collSongs && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = SongTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collSongs = new $collectionClassName;
-        $this->collSongs->setModel('\Song');
-    }
-
-    /**
-     * Gets an array of ChildSong objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildEpisode is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildSong[] List of ChildSong objects
+     * @param  ChildSong $v
+     * @return $this|\SongLink The current object (for fluent API support)
      * @throws PropelException
      */
-    public function getSongs(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function setSong(ChildSong $v = null)
     {
-        $partial = $this->collSongsPartial && !$this->isNew();
-        if (null === $this->collSongs || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collSongs) {
-                // return empty collection
-                $this->initSongs();
-            } else {
-                $collSongs = ChildSongQuery::create(null, $criteria)
-                    ->filterByEpisode($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collSongsPartial && count($collSongs)) {
-                        $this->initSongs(false);
-
-                        foreach ($collSongs as $obj) {
-                            if (false == $this->collSongs->contains($obj)) {
-                                $this->collSongs->append($obj);
-                            }
-                        }
-
-                        $this->collSongsPartial = true;
-                    }
-
-                    return $collSongs;
-                }
-
-                if ($partial && $this->collSongs) {
-                    foreach ($this->collSongs as $obj) {
-                        if ($obj->isNew()) {
-                            $collSongs[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collSongs = $collSongs;
-                $this->collSongsPartial = false;
-            }
+        if ($v === null) {
+            $this->setSongId(NULL);
+        } else {
+            $this->setSongId($v->getId());
         }
 
-        return $this->collSongs;
-    }
+        $this->aSong = $v;
 
-    /**
-     * Sets a collection of ChildSong objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $songs A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildEpisode The current object (for fluent API support)
-     */
-    public function setSongs(Collection $songs, ConnectionInterface $con = null)
-    {
-        /** @var ChildSong[] $songsToDelete */
-        $songsToDelete = $this->getSongs(new Criteria(), $con)->diff($songs);
-
-
-        $this->songsScheduledForDeletion = $songsToDelete;
-
-        foreach ($songsToDelete as $songRemoved) {
-            $songRemoved->setEpisode(null);
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildSong object, it will not be re-added.
+        if ($v !== null) {
+            $v->addSongLink($this);
         }
 
-        $this->collSongs = null;
-        foreach ($songs as $song) {
-            $this->addSong($song);
-        }
-
-        $this->collSongs = $songs;
-        $this->collSongsPartial = false;
 
         return $this;
     }
 
+
     /**
-     * Returns the number of related Song objects.
+     * Get the associated ChildSong object
      *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Song objects.
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildSong The associated ChildSong object.
      * @throws PropelException
      */
-    public function countSongs(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function getSong(ConnectionInterface $con = null)
     {
-        $partial = $this->collSongsPartial && !$this->isNew();
-        if (null === $this->collSongs || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collSongs) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getSongs());
-            }
-
-            $query = ChildSongQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByEpisode($this)
-                ->count($con);
+        if ($this->aSong === null && ($this->song_id != 0)) {
+            $this->aSong = ChildSongQuery::create()->findPk($this->song_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aSong->addSongLinks($this);
+             */
         }
 
-        return count($this->collSongs);
-    }
-
-    /**
-     * Method called to associate a ChildSong object to this object
-     * through the ChildSong foreign key attribute.
-     *
-     * @param  ChildSong $l ChildSong
-     * @return $this|\Episode The current object (for fluent API support)
-     */
-    public function addSong(ChildSong $l)
-    {
-        if ($this->collSongs === null) {
-            $this->initSongs();
-            $this->collSongsPartial = true;
-        }
-
-        if (!$this->collSongs->contains($l)) {
-            $this->doAddSong($l);
-
-            if ($this->songsScheduledForDeletion and $this->songsScheduledForDeletion->contains($l)) {
-                $this->songsScheduledForDeletion->remove($this->songsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildSong $song The ChildSong object to add.
-     */
-    protected function doAddSong(ChildSong $song)
-    {
-        $this->collSongs[]= $song;
-        $song->setEpisode($this);
-    }
-
-    /**
-     * @param  ChildSong $song The ChildSong object to remove.
-     * @return $this|ChildEpisode The current object (for fluent API support)
-     */
-    public function removeSong(ChildSong $song)
-    {
-        if ($this->getSongs()->contains($song)) {
-            $pos = $this->collSongs->search($song);
-            $this->collSongs->remove($pos);
-            if (null === $this->songsScheduledForDeletion) {
-                $this->songsScheduledForDeletion = clone $this->collSongs;
-                $this->songsScheduledForDeletion->clear();
-            }
-            $this->songsScheduledForDeletion[]= clone $song;
-            $song->setEpisode(null);
-        }
-
-        return $this;
+        return $this->aSong;
     }
 
     /**
@@ -1560,15 +1200,15 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function clear()
     {
-        $this->id = null;
-        $this->upload_date = null;
+        if (null !== $this->aSong) {
+            $this->aSong->removeSongLink($this);
+        }
+        $this->tag = null;
+        $this->song_id = null;
+        $this->url = null;
         $this->title = null;
-        $this->description = null;
-        $this->processed = null;
-        $this->music = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
-        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1585,14 +1225,9 @@ abstract class Episode implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collSongs) {
-                foreach ($this->collSongs as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        $this->collSongs = null;
+        $this->aSong = null;
     }
 
     /**
@@ -1602,7 +1237,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(EpisodeTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(SongLinkTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

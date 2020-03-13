@@ -10,6 +10,7 @@ use Map\EpisodeTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
+use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
@@ -19,18 +20,16 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  *
- * @method     ChildEpisodeQuery orderByTag($order = Criteria::ASC) Order by the tag column
+ * @method     ChildEpisodeQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildEpisodeQuery orderByUploadDate($order = Criteria::ASC) Order by the upload_date column
  * @method     ChildEpisodeQuery orderByTitle($order = Criteria::ASC) Order by the title column
- * @method     ChildEpisodeQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildEpisodeQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildEpisodeQuery orderByProcessed($order = Criteria::ASC) Order by the processed column
  * @method     ChildEpisodeQuery orderByMusic($order = Criteria::ASC) Order by the music column
  *
- * @method     ChildEpisodeQuery groupByTag() Group by the tag column
+ * @method     ChildEpisodeQuery groupById() Group by the id column
  * @method     ChildEpisodeQuery groupByUploadDate() Group by the upload_date column
  * @method     ChildEpisodeQuery groupByTitle() Group by the title column
- * @method     ChildEpisodeQuery groupById() Group by the id column
  * @method     ChildEpisodeQuery groupByDescription() Group by the description column
  * @method     ChildEpisodeQuery groupByProcessed() Group by the processed column
  * @method     ChildEpisodeQuery groupByMusic() Group by the music column
@@ -43,13 +42,24 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEpisodeQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildEpisodeQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
+ * @method     ChildEpisodeQuery leftJoinSong($relationAlias = null) Adds a LEFT JOIN clause to the query using the Song relation
+ * @method     ChildEpisodeQuery rightJoinSong($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Song relation
+ * @method     ChildEpisodeQuery innerJoinSong($relationAlias = null) Adds a INNER JOIN clause to the query using the Song relation
+ *
+ * @method     ChildEpisodeQuery joinWithSong($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Song relation
+ *
+ * @method     ChildEpisodeQuery leftJoinWithSong() Adds a LEFT JOIN clause and with to the query using the Song relation
+ * @method     ChildEpisodeQuery rightJoinWithSong() Adds a RIGHT JOIN clause and with to the query using the Song relation
+ * @method     ChildEpisodeQuery innerJoinWithSong() Adds a INNER JOIN clause and with to the query using the Song relation
+ *
+ * @method     \SongQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ *
  * @method     ChildEpisode findOne(ConnectionInterface $con = null) Return the first ChildEpisode matching the query
  * @method     ChildEpisode findOneOrCreate(ConnectionInterface $con = null) Return the first ChildEpisode matching the query, or a new ChildEpisode object populated from the query conditions when no match is found
  *
- * @method     ChildEpisode findOneByTag(int $tag) Return the first ChildEpisode filtered by the tag column
+ * @method     ChildEpisode findOneById(string $id) Return the first ChildEpisode filtered by the id column
  * @method     ChildEpisode findOneByUploadDate(string $upload_date) Return the first ChildEpisode filtered by the upload_date column
  * @method     ChildEpisode findOneByTitle(string $title) Return the first ChildEpisode filtered by the title column
- * @method     ChildEpisode findOneById(string $id) Return the first ChildEpisode filtered by the id column
  * @method     ChildEpisode findOneByDescription(string $description) Return the first ChildEpisode filtered by the description column
  * @method     ChildEpisode findOneByProcessed(int $processed) Return the first ChildEpisode filtered by the processed column
  * @method     ChildEpisode findOneByMusic(string $music) Return the first ChildEpisode filtered by the music column *
@@ -57,19 +67,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEpisode requirePk($key, ConnectionInterface $con = null) Return the ChildEpisode by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEpisode requireOne(ConnectionInterface $con = null) Return the first ChildEpisode matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildEpisode requireOneByTag(int $tag) Return the first ChildEpisode filtered by the tag column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildEpisode requireOneById(string $id) Return the first ChildEpisode filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEpisode requireOneByUploadDate(string $upload_date) Return the first ChildEpisode filtered by the upload_date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEpisode requireOneByTitle(string $title) Return the first ChildEpisode filtered by the title column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildEpisode requireOneById(string $id) Return the first ChildEpisode filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEpisode requireOneByDescription(string $description) Return the first ChildEpisode filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEpisode requireOneByProcessed(int $processed) Return the first ChildEpisode filtered by the processed column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEpisode requireOneByMusic(string $music) Return the first ChildEpisode filtered by the music column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildEpisode[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildEpisode objects based on current ModelCriteria
- * @method     ChildEpisode[]|ObjectCollection findByTag(int $tag) Return ChildEpisode objects filtered by the tag column
+ * @method     ChildEpisode[]|ObjectCollection findById(string $id) Return ChildEpisode objects filtered by the id column
  * @method     ChildEpisode[]|ObjectCollection findByUploadDate(string $upload_date) Return ChildEpisode objects filtered by the upload_date column
  * @method     ChildEpisode[]|ObjectCollection findByTitle(string $title) Return ChildEpisode objects filtered by the title column
- * @method     ChildEpisode[]|ObjectCollection findById(string $id) Return ChildEpisode objects filtered by the id column
  * @method     ChildEpisode[]|ObjectCollection findByDescription(string $description) Return ChildEpisode objects filtered by the description column
  * @method     ChildEpisode[]|ObjectCollection findByProcessed(int $processed) Return ChildEpisode objects filtered by the processed column
  * @method     ChildEpisode[]|ObjectCollection findByMusic(string $music) Return ChildEpisode objects filtered by the music column
@@ -171,10 +179,10 @@ abstract class EpisodeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT tag, upload_date, title, id, description, processed, music FROM episodes WHERE tag = :p0';
+        $sql = 'SELECT id, upload_date, title, description, processed, music FROM episodes WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
-            $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+            $stmt->bindValue(':p0', $key, PDO::PARAM_STR);
             $stmt->execute();
         } catch (Exception $e) {
             Propel::log($e->getMessage(), Propel::LOG_ERR);
@@ -245,7 +253,7 @@ abstract class EpisodeQuery extends ModelCriteria
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(EpisodeTableMap::COL_TAG, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(EpisodeTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -258,48 +266,32 @@ abstract class EpisodeQuery extends ModelCriteria
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(EpisodeTableMap::COL_TAG, $keys, Criteria::IN);
+        return $this->addUsingAlias(EpisodeTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
-     * Filter the query on the tag column
+     * Filter the query on the id column
      *
      * Example usage:
      * <code>
-     * $query->filterByTag(1234); // WHERE tag = 1234
-     * $query->filterByTag(array(12, 34)); // WHERE tag IN (12, 34)
-     * $query->filterByTag(array('min' => 12)); // WHERE tag > 12
+     * $query->filterById('fooValue');   // WHERE id = 'fooValue'
+     * $query->filterById('%fooValue%', Criteria::LIKE); // WHERE id LIKE '%fooValue%'
      * </code>
      *
-     * @param     mixed $tag The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $id The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildEpisodeQuery The current query, for fluid interface
      */
-    public function filterByTag($tag = null, $comparison = null)
+    public function filterById($id = null, $comparison = null)
     {
-        if (is_array($tag)) {
-            $useMinMax = false;
-            if (isset($tag['min'])) {
-                $this->addUsingAlias(EpisodeTableMap::COL_TAG, $tag['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($tag['max'])) {
-                $this->addUsingAlias(EpisodeTableMap::COL_TAG, $tag['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
+        if (null === $comparison) {
+            if (is_array($id)) {
                 $comparison = Criteria::IN;
             }
         }
 
-        return $this->addUsingAlias(EpisodeTableMap::COL_TAG, $tag, $comparison);
+        return $this->addUsingAlias(EpisodeTableMap::COL_ID, $id, $comparison);
     }
 
     /**
@@ -368,31 +360,6 @@ abstract class EpisodeQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(EpisodeTableMap::COL_TITLE, $title, $comparison);
-    }
-
-    /**
-     * Filter the query on the id column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterById('fooValue');   // WHERE id = 'fooValue'
-     * $query->filterById('%fooValue%', Criteria::LIKE); // WHERE id LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $id The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildEpisodeQuery The current query, for fluid interface
-     */
-    public function filterById($id = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($id)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(EpisodeTableMap::COL_ID, $id, $comparison);
     }
 
     /**
@@ -487,6 +454,79 @@ abstract class EpisodeQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Song object
+     *
+     * @param \Song|ObjectCollection $song the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEpisodeQuery The current query, for fluid interface
+     */
+    public function filterBySong($song, $comparison = null)
+    {
+        if ($song instanceof \Song) {
+            return $this
+                ->addUsingAlias(EpisodeTableMap::COL_ID, $song->getEpisodeId(), $comparison);
+        } elseif ($song instanceof ObjectCollection) {
+            return $this
+                ->useSongQuery()
+                ->filterByPrimaryKeys($song->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterBySong() only accepts arguments of type \Song or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Song relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildEpisodeQuery The current query, for fluid interface
+     */
+    public function joinSong($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Song');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Song');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Song relation Song object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \SongQuery A secondary query class using the current class as primary query
+     */
+    public function useSongQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinSong($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Song', '\SongQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildEpisode $episode Object to remove from the list of results
@@ -496,7 +536,7 @@ abstract class EpisodeQuery extends ModelCriteria
     public function prune($episode = null)
     {
         if ($episode) {
-            $this->addUsingAlias(EpisodeTableMap::COL_TAG, $episode->getTag(), Criteria::NOT_EQUAL);
+            $this->addUsingAlias(EpisodeTableMap::COL_ID, $episode->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;

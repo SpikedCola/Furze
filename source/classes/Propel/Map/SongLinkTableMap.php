@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \Episode;
-use \EpisodeQuery;
+use \SongLink;
+use \SongLinkQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'episodes' table.
+ * This class defines the structure of the 'song_links' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class EpisodeTableMap extends TableMap
+class SongLinkTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class EpisodeTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.EpisodeTableMap';
+    const CLASS_NAME = '.Map.SongLinkTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class EpisodeTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'episodes';
+    const TABLE_NAME = 'song_links';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Episode';
+    const OM_CLASS = '\\SongLink';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Episode';
+    const CLASS_DEFAULT = 'SongLink';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -69,37 +69,27 @@ class EpisodeTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
-     * the column name for the id field
+     * the column name for the tag field
      */
-    const COL_ID = 'episodes.id';
+    const COL_TAG = 'song_links.tag';
 
     /**
-     * the column name for the upload_date field
+     * the column name for the song_id field
      */
-    const COL_UPLOAD_DATE = 'episodes.upload_date';
+    const COL_SONG_ID = 'song_links.song_id';
+
+    /**
+     * the column name for the url field
+     */
+    const COL_URL = 'song_links.url';
 
     /**
      * the column name for the title field
      */
-    const COL_TITLE = 'episodes.title';
-
-    /**
-     * the column name for the description field
-     */
-    const COL_DESCRIPTION = 'episodes.description';
-
-    /**
-     * the column name for the processed field
-     */
-    const COL_PROCESSED = 'episodes.processed';
-
-    /**
-     * the column name for the music field
-     */
-    const COL_MUSIC = 'episodes.music';
+    const COL_TITLE = 'song_links.title';
 
     /**
      * The default string format for model objects of the related table
@@ -113,11 +103,11 @@ class EpisodeTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'UploadDate', 'Title', 'Description', 'Processed', 'Music', ),
-        self::TYPE_CAMELNAME     => array('id', 'uploadDate', 'title', 'description', 'processed', 'music', ),
-        self::TYPE_COLNAME       => array(EpisodeTableMap::COL_ID, EpisodeTableMap::COL_UPLOAD_DATE, EpisodeTableMap::COL_TITLE, EpisodeTableMap::COL_DESCRIPTION, EpisodeTableMap::COL_PROCESSED, EpisodeTableMap::COL_MUSIC, ),
-        self::TYPE_FIELDNAME     => array('id', 'upload_date', 'title', 'description', 'processed', 'music', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Tag', 'SongId', 'Url', 'Title', ),
+        self::TYPE_CAMELNAME     => array('tag', 'songId', 'url', 'title', ),
+        self::TYPE_COLNAME       => array(SongLinkTableMap::COL_TAG, SongLinkTableMap::COL_SONG_ID, SongLinkTableMap::COL_URL, SongLinkTableMap::COL_TITLE, ),
+        self::TYPE_FIELDNAME     => array('tag', 'song_id', 'url', 'title', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -127,11 +117,11 @@ class EpisodeTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'UploadDate' => 1, 'Title' => 2, 'Description' => 3, 'Processed' => 4, 'Music' => 5, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'uploadDate' => 1, 'title' => 2, 'description' => 3, 'processed' => 4, 'music' => 5, ),
-        self::TYPE_COLNAME       => array(EpisodeTableMap::COL_ID => 0, EpisodeTableMap::COL_UPLOAD_DATE => 1, EpisodeTableMap::COL_TITLE => 2, EpisodeTableMap::COL_DESCRIPTION => 3, EpisodeTableMap::COL_PROCESSED => 4, EpisodeTableMap::COL_MUSIC => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'upload_date' => 1, 'title' => 2, 'description' => 3, 'processed' => 4, 'music' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Tag' => 0, 'SongId' => 1, 'Url' => 2, 'Title' => 3, ),
+        self::TYPE_CAMELNAME     => array('tag' => 0, 'songId' => 1, 'url' => 2, 'title' => 3, ),
+        self::TYPE_COLNAME       => array(SongLinkTableMap::COL_TAG => 0, SongLinkTableMap::COL_SONG_ID => 1, SongLinkTableMap::COL_URL => 2, SongLinkTableMap::COL_TITLE => 3, ),
+        self::TYPE_FIELDNAME     => array('tag' => 0, 'song_id' => 1, 'url' => 2, 'title' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -144,19 +134,17 @@ class EpisodeTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('episodes');
-        $this->setPhpName('Episode');
+        $this->setName('song_links');
+        $this->setPhpName('SongLink');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Episode');
+        $this->setClassName('\\SongLink');
         $this->setPackage('');
-        $this->setUseIdGenerator(false);
+        $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('id', 'Id', 'VARCHAR', true, 255, null);
-        $this->addColumn('upload_date', 'UploadDate', 'DATE', true, null, null);
+        $this->addPrimaryKey('tag', 'Tag', 'INTEGER', true, null, null);
+        $this->addForeignKey('song_id', 'SongId', 'INTEGER', 'songs', 'id', true, null, null);
+        $this->addColumn('url', 'Url', 'LONGVARCHAR', true, null, null);
         $this->addColumn('title', 'Title', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('description', 'Description', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('processed', 'Processed', 'INTEGER', true, null, 0);
-        $this->addColumn('music', 'Music', 'LONGVARCHAR', false, null, null);
     } // initialize()
 
     /**
@@ -164,13 +152,13 @@ class EpisodeTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Song', '\\Song', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Song', '\\Song', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':episode_id',
+    0 => ':song_id',
     1 => ':id',
   ),
-), null, null, 'Songs', false);
+), null, null, null, false);
     } // buildRelations()
 
     /**
@@ -189,11 +177,11 @@ class EpisodeTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -210,10 +198,10 @@ class EpisodeTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return (string) $row[
+        return (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)
         ];
     }
 
@@ -230,7 +218,7 @@ class EpisodeTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? EpisodeTableMap::CLASS_DEFAULT : EpisodeTableMap::OM_CLASS;
+        return $withPrefix ? SongLinkTableMap::CLASS_DEFAULT : SongLinkTableMap::OM_CLASS;
     }
 
     /**
@@ -244,22 +232,22 @@ class EpisodeTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Episode object, last column rank)
+     * @return array           (SongLink object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = EpisodeTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = EpisodeTableMap::getInstanceFromPool($key))) {
+        $key = SongLinkTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = SongLinkTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + EpisodeTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + SongLinkTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = EpisodeTableMap::OM_CLASS;
-            /** @var Episode $obj */
+            $cls = SongLinkTableMap::OM_CLASS;
+            /** @var SongLink $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            EpisodeTableMap::addInstanceToPool($obj, $key);
+            SongLinkTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -282,18 +270,18 @@ class EpisodeTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = EpisodeTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = EpisodeTableMap::getInstanceFromPool($key))) {
+            $key = SongLinkTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = SongLinkTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Episode $obj */
+                /** @var SongLink $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                EpisodeTableMap::addInstanceToPool($obj, $key);
+                SongLinkTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -314,19 +302,15 @@ class EpisodeTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(EpisodeTableMap::COL_ID);
-            $criteria->addSelectColumn(EpisodeTableMap::COL_UPLOAD_DATE);
-            $criteria->addSelectColumn(EpisodeTableMap::COL_TITLE);
-            $criteria->addSelectColumn(EpisodeTableMap::COL_DESCRIPTION);
-            $criteria->addSelectColumn(EpisodeTableMap::COL_PROCESSED);
-            $criteria->addSelectColumn(EpisodeTableMap::COL_MUSIC);
+            $criteria->addSelectColumn(SongLinkTableMap::COL_TAG);
+            $criteria->addSelectColumn(SongLinkTableMap::COL_SONG_ID);
+            $criteria->addSelectColumn(SongLinkTableMap::COL_URL);
+            $criteria->addSelectColumn(SongLinkTableMap::COL_TITLE);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.upload_date');
+            $criteria->addSelectColumn($alias . '.tag');
+            $criteria->addSelectColumn($alias . '.song_id');
+            $criteria->addSelectColumn($alias . '.url');
             $criteria->addSelectColumn($alias . '.title');
-            $criteria->addSelectColumn($alias . '.description');
-            $criteria->addSelectColumn($alias . '.processed');
-            $criteria->addSelectColumn($alias . '.music');
         }
     }
 
@@ -339,7 +323,7 @@ class EpisodeTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(EpisodeTableMap::DATABASE_NAME)->getTable(EpisodeTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(SongLinkTableMap::DATABASE_NAME)->getTable(SongLinkTableMap::TABLE_NAME);
     }
 
     /**
@@ -347,16 +331,16 @@ class EpisodeTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(EpisodeTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(EpisodeTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new EpisodeTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(SongLinkTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(SongLinkTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new SongLinkTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Episode or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a SongLink or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Episode object or primary key or array of primary keys
+     * @param mixed               $values Criteria or SongLink object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -367,27 +351,27 @@ class EpisodeTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(EpisodeTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(SongLinkTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Episode) { // it's a model object
+        } elseif ($values instanceof \SongLink) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(EpisodeTableMap::DATABASE_NAME);
-            $criteria->add(EpisodeTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(SongLinkTableMap::DATABASE_NAME);
+            $criteria->add(SongLinkTableMap::COL_TAG, (array) $values, Criteria::IN);
         }
 
-        $query = EpisodeQuery::create()->mergeWith($criteria);
+        $query = SongLinkQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            EpisodeTableMap::clearInstancePool();
+            SongLinkTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                EpisodeTableMap::removeInstanceFromPool($singleval);
+                SongLinkTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -395,20 +379,20 @@ class EpisodeTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the episodes table.
+     * Deletes all rows from the song_links table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return EpisodeQuery::create()->doDeleteAll($con);
+        return SongLinkQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Episode or Criteria object.
+     * Performs an INSERT on the database, given a SongLink or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Episode object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or SongLink object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -417,18 +401,22 @@ class EpisodeTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(EpisodeTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(SongLinkTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Episode object
+            $criteria = $criteria->buildCriteria(); // build Criteria from SongLink object
+        }
+
+        if ($criteria->containsKey(SongLinkTableMap::COL_TAG) && $criteria->keyContainsValue(SongLinkTableMap::COL_TAG) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.SongLinkTableMap::COL_TAG.')');
         }
 
 
         // Set the correct dbName
-        $query = EpisodeQuery::create()->mergeWith($criteria);
+        $query = SongLinkQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -437,7 +425,7 @@ class EpisodeTableMap extends TableMap
         });
     }
 
-} // EpisodeTableMap
+} // SongLinkTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-EpisodeTableMap::buildTableMap();
+SongLinkTableMap::buildTableMap();
