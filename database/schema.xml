@@ -44,6 +44,7 @@ to update composer autoloader (would be nice to use psr0 but couldnt figure it o
 		<column name="episode_id" phpName="EpisodeId" type="VARCHAR" size="20" required="true"/>
 		<column name="title" phpName="Title" type="LONGVARCHAR" required="true"/>
 		<column name="artist" phpName="Artist" type="LONGVARCHAR" required="true"/>
+		<column name="track_number" phpName="TrackNumber" type="INTEGER" defaultValue="1"/>
 		<column name="notes" phpName="Notes" type="LONGVARCHAR"/>
 		<foreign-key foreignTable="episodes" name="songs_ibfk_1">
 			<reference local="episode_id" foreign="id"/>

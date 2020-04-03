@@ -1,14 +1,8 @@
-{if $ep}
-	<h1>{$ep->getTitle()}</h1>
-	<hr />
-	{* nofilter to allow mark/html *}
-	<pre>{$desc nofilter}</pre>
-	<hr />
-	<form method="post">
-		<input type="hidden" name="id" value="{$ep->getId()}" />
-		<textarea name="music" style="height: 300px; width: 500px;"></textarea>
-		<button type="submit" style="vertical-align: top;">Save</button>
-	</form>
-{else}
-	Done!
-{/if}
+Todo bot to fetch episodes
+<hr />
+New episodes<br />
+... <br />
+[start processing]
+<hr />
+Phase 1: parse music info from description<br />
+Phase 2: parse each song from music column- <a href="parse-songs" />Parse Songs</a>

@@ -59,7 +59,7 @@ class SongTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 5;
+    const NUM_COLUMNS = 6;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class SongTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 5;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /**
      * the column name for the id field
@@ -92,6 +92,11 @@ class SongTableMap extends TableMap
     const COL_ARTIST = 'songs.artist';
 
     /**
+     * the column name for the track_number field
+     */
+    const COL_TRACK_NUMBER = 'songs.track_number';
+
+    /**
      * the column name for the notes field
      */
     const COL_NOTES = 'songs.notes';
@@ -108,11 +113,11 @@ class SongTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'EpisodeId', 'Title', 'Artist', 'Notes', ),
-        self::TYPE_CAMELNAME     => array('id', 'episodeId', 'title', 'artist', 'notes', ),
-        self::TYPE_COLNAME       => array(SongTableMap::COL_ID, SongTableMap::COL_EPISODE_ID, SongTableMap::COL_TITLE, SongTableMap::COL_ARTIST, SongTableMap::COL_NOTES, ),
-        self::TYPE_FIELDNAME     => array('id', 'episode_id', 'title', 'artist', 'notes', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id', 'EpisodeId', 'Title', 'Artist', 'TrackNumber', 'Notes', ),
+        self::TYPE_CAMELNAME     => array('id', 'episodeId', 'title', 'artist', 'trackNumber', 'notes', ),
+        self::TYPE_COLNAME       => array(SongTableMap::COL_ID, SongTableMap::COL_EPISODE_ID, SongTableMap::COL_TITLE, SongTableMap::COL_ARTIST, SongTableMap::COL_TRACK_NUMBER, SongTableMap::COL_NOTES, ),
+        self::TYPE_FIELDNAME     => array('id', 'episode_id', 'title', 'artist', 'track_number', 'notes', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -122,11 +127,11 @@ class SongTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'EpisodeId' => 1, 'Title' => 2, 'Artist' => 3, 'Notes' => 4, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'episodeId' => 1, 'title' => 2, 'artist' => 3, 'notes' => 4, ),
-        self::TYPE_COLNAME       => array(SongTableMap::COL_ID => 0, SongTableMap::COL_EPISODE_ID => 1, SongTableMap::COL_TITLE => 2, SongTableMap::COL_ARTIST => 3, SongTableMap::COL_NOTES => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'episode_id' => 1, 'title' => 2, 'artist' => 3, 'notes' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'EpisodeId' => 1, 'Title' => 2, 'Artist' => 3, 'TrackNumber' => 4, 'Notes' => 5, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'episodeId' => 1, 'title' => 2, 'artist' => 3, 'trackNumber' => 4, 'notes' => 5, ),
+        self::TYPE_COLNAME       => array(SongTableMap::COL_ID => 0, SongTableMap::COL_EPISODE_ID => 1, SongTableMap::COL_TITLE => 2, SongTableMap::COL_ARTIST => 3, SongTableMap::COL_TRACK_NUMBER => 4, SongTableMap::COL_NOTES => 5, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'episode_id' => 1, 'title' => 2, 'artist' => 3, 'track_number' => 4, 'notes' => 5, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -150,6 +155,7 @@ class SongTableMap extends TableMap
         $this->addForeignKey('episode_id', 'EpisodeId', 'VARCHAR', 'episodes', 'id', true, 20, null);
         $this->addColumn('title', 'Title', 'LONGVARCHAR', true, null, null);
         $this->addColumn('artist', 'Artist', 'LONGVARCHAR', true, null, null);
+        $this->addColumn('track_number', 'TrackNumber', 'INTEGER', false, null, 1);
         $this->addColumn('notes', 'Notes', 'LONGVARCHAR', false, null, null);
     } // initialize()
 
@@ -319,12 +325,14 @@ class SongTableMap extends TableMap
             $criteria->addSelectColumn(SongTableMap::COL_EPISODE_ID);
             $criteria->addSelectColumn(SongTableMap::COL_TITLE);
             $criteria->addSelectColumn(SongTableMap::COL_ARTIST);
+            $criteria->addSelectColumn(SongTableMap::COL_TRACK_NUMBER);
             $criteria->addSelectColumn(SongTableMap::COL_NOTES);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.episode_id');
             $criteria->addSelectColumn($alias . '.title');
             $criteria->addSelectColumn($alias . '.artist');
+            $criteria->addSelectColumn($alias . '.track_number');
             $criteria->addSelectColumn($alias . '.notes');
         }
     }

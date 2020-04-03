@@ -95,6 +95,14 @@ abstract class Song implements ActiveRecordInterface
     protected $artist;
 
     /**
+     * The value for the track_number field.
+     *
+     * Note: this column has a database default value of: 1
+     * @var        int
+     */
+    protected $track_number;
+
+    /**
      * The value for the notes field.
      *
      * @var        string
@@ -127,10 +135,23 @@ abstract class Song implements ActiveRecordInterface
     protected $songLinksScheduledForDeletion = null;
 
     /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->track_number = 1;
+    }
+
+    /**
      * Initializes internal state of Base\Song object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -392,6 +413,16 @@ abstract class Song implements ActiveRecordInterface
     }
 
     /**
+     * Get the [track_number] column value.
+     *
+     * @return int
+     */
+    public function getTrackNumber()
+    {
+        return $this->track_number;
+    }
+
+    /**
      * Get the [notes] column value.
      *
      * @return string
@@ -486,6 +517,26 @@ abstract class Song implements ActiveRecordInterface
     } // setArtist()
 
     /**
+     * Set the value of [track_number] column.
+     *
+     * @param int $v new value
+     * @return $this|\Song The current object (for fluent API support)
+     */
+    public function setTrackNumber($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->track_number !== $v) {
+            $this->track_number = $v;
+            $this->modifiedColumns[SongTableMap::COL_TRACK_NUMBER] = true;
+        }
+
+        return $this;
+    } // setTrackNumber()
+
+    /**
      * Set the value of [notes] column.
      *
      * @param string $v new value
@@ -515,6 +566,10 @@ abstract class Song implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->track_number !== 1) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -553,7 +608,10 @@ abstract class Song implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : SongTableMap::translateFieldName('Artist', TableMap::TYPE_PHPNAME, $indexType)];
             $this->artist = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : SongTableMap::translateFieldName('Notes', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : SongTableMap::translateFieldName('TrackNumber', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->track_number = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : SongTableMap::translateFieldName('Notes', TableMap::TYPE_PHPNAME, $indexType)];
             $this->notes = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -563,7 +621,7 @@ abstract class Song implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = SongTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = SongTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Song'), 0, $e);
@@ -811,6 +869,9 @@ abstract class Song implements ActiveRecordInterface
         if ($this->isColumnModified(SongTableMap::COL_ARTIST)) {
             $modifiedColumns[':p' . $index++]  = 'artist';
         }
+        if ($this->isColumnModified(SongTableMap::COL_TRACK_NUMBER)) {
+            $modifiedColumns[':p' . $index++]  = 'track_number';
+        }
         if ($this->isColumnModified(SongTableMap::COL_NOTES)) {
             $modifiedColumns[':p' . $index++]  = 'notes';
         }
@@ -836,6 +897,9 @@ abstract class Song implements ActiveRecordInterface
                         break;
                     case 'artist':
                         $stmt->bindValue($identifier, $this->artist, PDO::PARAM_STR);
+                        break;
+                    case 'track_number':
+                        $stmt->bindValue($identifier, $this->track_number, PDO::PARAM_INT);
                         break;
                     case 'notes':
                         $stmt->bindValue($identifier, $this->notes, PDO::PARAM_STR);
@@ -915,6 +979,9 @@ abstract class Song implements ActiveRecordInterface
                 return $this->getArtist();
                 break;
             case 4:
+                return $this->getTrackNumber();
+                break;
+            case 5:
                 return $this->getNotes();
                 break;
             default:
@@ -951,7 +1018,8 @@ abstract class Song implements ActiveRecordInterface
             $keys[1] => $this->getEpisodeId(),
             $keys[2] => $this->getTitle(),
             $keys[3] => $this->getArtist(),
-            $keys[4] => $this->getNotes(),
+            $keys[4] => $this->getTrackNumber(),
+            $keys[5] => $this->getNotes(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1036,6 +1104,9 @@ abstract class Song implements ActiveRecordInterface
                 $this->setArtist($value);
                 break;
             case 4:
+                $this->setTrackNumber($value);
+                break;
+            case 5:
                 $this->setNotes($value);
                 break;
         } // switch()
@@ -1077,7 +1148,10 @@ abstract class Song implements ActiveRecordInterface
             $this->setArtist($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setNotes($arr[$keys[4]]);
+            $this->setTrackNumber($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setNotes($arr[$keys[5]]);
         }
     }
 
@@ -1131,6 +1205,9 @@ abstract class Song implements ActiveRecordInterface
         }
         if ($this->isColumnModified(SongTableMap::COL_ARTIST)) {
             $criteria->add(SongTableMap::COL_ARTIST, $this->artist);
+        }
+        if ($this->isColumnModified(SongTableMap::COL_TRACK_NUMBER)) {
+            $criteria->add(SongTableMap::COL_TRACK_NUMBER, $this->track_number);
         }
         if ($this->isColumnModified(SongTableMap::COL_NOTES)) {
             $criteria->add(SongTableMap::COL_NOTES, $this->notes);
@@ -1224,6 +1301,7 @@ abstract class Song implements ActiveRecordInterface
         $copyObj->setEpisodeId($this->getEpisodeId());
         $copyObj->setTitle($this->getTitle());
         $copyObj->setArtist($this->getArtist());
+        $copyObj->setTrackNumber($this->getTrackNumber());
         $copyObj->setNotes($this->getNotes());
 
         if ($deepCopy) {
@@ -1574,9 +1652,11 @@ abstract class Song implements ActiveRecordInterface
         $this->episode_id = null;
         $this->title = null;
         $this->artist = null;
+        $this->track_number = null;
         $this->notes = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);

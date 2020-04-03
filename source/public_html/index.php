@@ -9,10 +9,11 @@ use Propel\Runtime\ActiveQuery\Criteria;
 require_once(__DIR__.'/ui.php');
 
 
-$episodes = EpisodeQuery::create()
-	->filterByMusic(null, Criteria::NOT_EQUAL)
-	->orderByUploadDate(Criteria::DESC)
+$songs = SongQuery::create()
+	->useEpisodeQuery()
+		->orderByUploadDate(Criteria::DESC)
+	->endUse()
 	->find();
 
-$template->assign('episodes', $episodes);
+$template->assign('songs', $songs);
 $template->display('index.tpl');

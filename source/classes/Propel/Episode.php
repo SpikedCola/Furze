@@ -21,4 +21,12 @@ class Episode extends BaseEpisode {
 		$ep->setDescription($json->description);
 		return $ep;
 	}
+	public static function CreateFromArray(string $videoId, array $data) {
+		$ep = new Episode();
+		$ep->setId($videoId);
+		$ep->setUploadDate($data['upload_date']);
+		$ep->setTitle($data['title']);
+		$ep->setDescription($data['description']);
+		return $ep;
+	}
 }

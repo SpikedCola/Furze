@@ -24,12 +24,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSongQuery orderByEpisodeId($order = Criteria::ASC) Order by the episode_id column
  * @method     ChildSongQuery orderByTitle($order = Criteria::ASC) Order by the title column
  * @method     ChildSongQuery orderByArtist($order = Criteria::ASC) Order by the artist column
+ * @method     ChildSongQuery orderByTrackNumber($order = Criteria::ASC) Order by the track_number column
  * @method     ChildSongQuery orderByNotes($order = Criteria::ASC) Order by the notes column
  *
  * @method     ChildSongQuery groupById() Group by the id column
  * @method     ChildSongQuery groupByEpisodeId() Group by the episode_id column
  * @method     ChildSongQuery groupByTitle() Group by the title column
  * @method     ChildSongQuery groupByArtist() Group by the artist column
+ * @method     ChildSongQuery groupByTrackNumber() Group by the track_number column
  * @method     ChildSongQuery groupByNotes() Group by the notes column
  *
  * @method     ChildSongQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -69,6 +71,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSong findOneByEpisodeId(string $episode_id) Return the first ChildSong filtered by the episode_id column
  * @method     ChildSong findOneByTitle(string $title) Return the first ChildSong filtered by the title column
  * @method     ChildSong findOneByArtist(string $artist) Return the first ChildSong filtered by the artist column
+ * @method     ChildSong findOneByTrackNumber(int $track_number) Return the first ChildSong filtered by the track_number column
  * @method     ChildSong findOneByNotes(string $notes) Return the first ChildSong filtered by the notes column *
 
  * @method     ChildSong requirePk($key, ConnectionInterface $con = null) Return the ChildSong by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -78,6 +81,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSong requireOneByEpisodeId(string $episode_id) Return the first ChildSong filtered by the episode_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSong requireOneByTitle(string $title) Return the first ChildSong filtered by the title column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSong requireOneByArtist(string $artist) Return the first ChildSong filtered by the artist column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSong requireOneByTrackNumber(int $track_number) Return the first ChildSong filtered by the track_number column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSong requireOneByNotes(string $notes) Return the first ChildSong filtered by the notes column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildSong[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildSong objects based on current ModelCriteria
@@ -85,6 +89,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSong[]|ObjectCollection findByEpisodeId(string $episode_id) Return ChildSong objects filtered by the episode_id column
  * @method     ChildSong[]|ObjectCollection findByTitle(string $title) Return ChildSong objects filtered by the title column
  * @method     ChildSong[]|ObjectCollection findByArtist(string $artist) Return ChildSong objects filtered by the artist column
+ * @method     ChildSong[]|ObjectCollection findByTrackNumber(int $track_number) Return ChildSong objects filtered by the track_number column
  * @method     ChildSong[]|ObjectCollection findByNotes(string $notes) Return ChildSong objects filtered by the notes column
  * @method     ChildSong[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
@@ -184,7 +189,7 @@ abstract class SongQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, episode_id, title, artist, notes FROM songs WHERE id = :p0';
+        $sql = 'SELECT id, episode_id, title, artist, track_number, notes FROM songs WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -388,6 +393,47 @@ abstract class SongQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(SongTableMap::COL_ARTIST, $artist, $comparison);
+    }
+
+    /**
+     * Filter the query on the track_number column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTrackNumber(1234); // WHERE track_number = 1234
+     * $query->filterByTrackNumber(array(12, 34)); // WHERE track_number IN (12, 34)
+     * $query->filterByTrackNumber(array('min' => 12)); // WHERE track_number > 12
+     * </code>
+     *
+     * @param     mixed $trackNumber The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildSongQuery The current query, for fluid interface
+     */
+    public function filterByTrackNumber($trackNumber = null, $comparison = null)
+    {
+        if (is_array($trackNumber)) {
+            $useMinMax = false;
+            if (isset($trackNumber['min'])) {
+                $this->addUsingAlias(SongTableMap::COL_TRACK_NUMBER, $trackNumber['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($trackNumber['max'])) {
+                $this->addUsingAlias(SongTableMap::COL_TRACK_NUMBER, $trackNumber['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(SongTableMap::COL_TRACK_NUMBER, $trackNumber, $comparison);
     }
 
     /**
