@@ -1,0 +1,5 @@
+AuthType Basic
+AuthName "ColinFurzeMusic Admin Section"
+#AuthUserFile /var/www/colinfurzemusic/source/.htpasswd
+AuthUserFile c:\wamp\www\furze\source\.htpasswd
+Require valid-user
