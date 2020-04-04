@@ -15,7 +15,7 @@
 	<tbody>
 		{foreach from=$songs item='song'}
 			<tr>
-				<td class="nowrap2"><a href="https://youtube.com/watch?v={$song->getEpisode()->getId()}">{$song->getEpisode()->getTitle()}</a></td>
+				<td><a target="_blank" href="https://youtube.com/watch?v={$song->getEpisode()->getId()}">{$song->getEpisode()->getTitle()}</a></td>
 				<td>{$song->getEpisode()->getUploadDate('Y-m-d')}</td>
 				<td>{$song->getTitle()}</td>
 				<td>{$song->getArtist()}</td>

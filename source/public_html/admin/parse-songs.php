@@ -35,6 +35,7 @@ $fields = [
 ];
 
 if (!empty($_POST['id'])) {
+	$id = $_POST['id'];
 	$songs = [];
 	foreach ($_POST['songs'] as $post) {
 		$song = new Song();
@@ -66,15 +67,14 @@ if (!empty($_POST['id'])) {
 			$songs[] = $song;
 		}
 	}
+	$saveEpisode = EpisodeQuery::create()
+		->findOneById($id);
+	if (!$saveEpisode) {
+		throw new RuntimeException('cant find id '.$id);
+	}
+	$saveEpisode->setProcessed(2);
+	// its probably valid that we process an episode but it has no songs
 	if ($songs) {
-		$id = $_POST['id'];
-		$saveEpisode = EpisodeQuery::create()
-			->findOneById($id);
-		if (!$saveEpisode) {
-			throw new RuntimeException('cant find id '.$id);
-		}
-		$saveEpisode->setProcessed(2);
-
 		foreach ($songs as $song) {
 			$saveEpisode->addSong($song);
 		}

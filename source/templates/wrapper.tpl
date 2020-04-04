@@ -6,6 +6,7 @@
 	</head>
 	<body>
 		{include file=$_content}
+		<script src="/js/ga.js"></script>
 		<script src="/js/sortable.min.js"></script>
 	</body>
 </html>
