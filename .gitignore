@@ -7,3 +7,4 @@ composer.lock
 vendor/
 _cache/
 _compiled/
+/source/.htpasswd

@@ -1,6 +1,7 @@
 {* if production, use strip to remove whitespace *}
 <html>
 	<head>
+		<title>Colin Furze Music</title>
 		<link rel="stylesheet" href="/css/index.css" />
 		<link rel="stylesheet" href="/css/sortable-theme-light.css" />
 	</head>
