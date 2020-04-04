@@ -19,7 +19,7 @@
 					</th>
 				{/foreach}
 			</tr>
-			{for $idx=0 to 4}
+			{for $idx=0 to 5}
 				<tr>
 					<td>
 						<input type="hidden" name="songs[{$idx}][track]" value="{$idx+1}" />
