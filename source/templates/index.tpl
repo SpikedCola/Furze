@@ -1,5 +1,5 @@
 <h1>Colin Furze Music</h1>
-<p>There's a ton of excellent music throughout <a href="https://www.youtube.com/user/colinfurze">Colin Furze</a>'s videos. I decided to put it all in one place, so more people can enjoy it. Colin lists some of the music on his site, but it's a little out of date. I hope you find something that you like!</p>
+<p>There's a lot of really excellent music throughout <a target="_blank" href="https://www.youtube.com/user/colinfurze">Colin Furze</a>'s videos. I decided to put it all in one place, so more people can enjoy it. Colin lists some of the music on his site, but it's a little out of date. I hope you find something that you like!</p>
 <hr />
 <table data-sortable class="sortable-theme-light main-table"> {* class theme name needs to match css file in wrapper *}
 	<thead>
