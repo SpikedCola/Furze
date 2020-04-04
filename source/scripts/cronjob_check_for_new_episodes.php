@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+use PHPMailer\PHPMailer\PHPMailer;
+
 require_once(__DIR__.'/inc.php');
 
 // videos *seem* to come back newest-to-oldest but i cant find it 
@@ -64,7 +66,47 @@ foreach ($videos as $videoId => $video) {
 
 if ($insertedVideos) {
 	echo "report inserted videos\n";
-	// @todo send email
+	sendEmail(['parkinglotlust@gmail.com'], 'New Colin Furze Video To Be Processed', "<a href=\"https://www.colinfurzemusic.com/admin/\">CFM Admin</a><br /><br />New videos to process:<br />".nl2br(print_r($insertedVideos, true)));
 }
 
 echo "done\n";
+
+function sendEmail(array $emails, string $subject, string $body) {
+	$mail = new PHPMailer(true);
+	try {
+		$mail->isSMTP();
+
+		//Enable SMTP debugging
+		// SMTP::DEBUG_OFF = off (for production use)
+		// SMTP::DEBUG_CLIENT = client messages
+		// SMTP::DEBUG_SERVER = client and server messages
+		//$mail->SMTPDebug = SMTP::DEBUG_SERVER;
+
+		$mail->Host = 'smtp.gmail.com';
+		$mail->Port = 587;
+		$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+		$mail->SMTPAuth = true;
+
+		$mail->Username = GMAIL_USERNAME;
+		$mail->Password = GMAIL_PASSWORD;
+		$mail->setFrom(GMAIL_FROM_ADDRESS, GMAIL_FROM_NAME);
+
+		$mail->Subject = $subject;
+		foreach ($emails as $addr) {
+			$mail->addAddress($addr);
+		}
+
+		//Read an HTML message body from an external file, convert referenced images to embedded,
+		//convert HTML into a basic plain-text alternative body
+		//$mail->msgHTML(file_get_contents('contents.html'), __DIR__);
+
+		$mail->msgHTML($body);
+		//$mail->AltBody = 'This is a plain-text message body';
+
+		$mail->send();
+	}
+	catch (Exception $e) {
+		var_dump($e);
+		echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+	}
+}
