@@ -116,14 +116,14 @@ $episode = EpisodeQuery::create()
 	->findOne();
 
 // stats for progress bar
-$totalEps = EpisodeQuery::create()
+$todoEps = EpisodeQuery::create()
 	->filterByMusic(null, Criteria::NOT_EQUAL)
 	->filterByProcessed(1) 
 	->count();
 $completeEps = EpisodeQuery::create()
 	->filterByProcessed(2) 
 	->count();
-$template->assign('totalEps', $totalEps);
+$template->assign('totalEps', $todoEps+$completeEps);
 $template->assign('completeEps', $completeEps);
 
 $template->assign('linkPlaces', $linkPlaces);
