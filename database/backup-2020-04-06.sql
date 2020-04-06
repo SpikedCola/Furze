@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.6deb5
+-- version 4.9.5deb2
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 04, 2020 at 01:27 PM
+-- Generation Time: Apr 06, 2020 at 11:19 AM
 -- Server version: 5.7.29-0ubuntu0.18.04.1
 -- PHP Version: 7.2.24-0ubuntu0.18.04.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -789,7 +791,7 @@ CREATE TABLE `song_links` (
   `tag` int(11) NOT NULL,
   `song_id` int(11) NOT NULL,
   `url` text NOT NULL,
-  `title` text NOT NULL
+  `title` text NOT NULL COMMENT 'there are hardcoded lists of these in admin/parser, and index.tpl'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -1614,11 +1616,13 @@ ALTER TABLE `song_links`
 --
 ALTER TABLE `songs`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=426;
+
 --
 -- AUTO_INCREMENT for table `song_links`
 --
 ALTER TABLE `song_links`
   MODIFY `tag` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=783;
+
 --
 -- Constraints for dumped tables
 --
@@ -1634,8 +1638,8 @@ ALTER TABLE `songs`
 --
 ALTER TABLE `song_links`
   ADD CONSTRAINT `song_links_ibfk_1` FOREIGN KEY (`song_id`) REFERENCES `songs` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
