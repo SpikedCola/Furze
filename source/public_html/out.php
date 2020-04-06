@@ -5,13 +5,12 @@
  * Probably unnecessary but I'd like it to work with my own browser setings.
  */
 
-use Propel\Runtime\ActiveQuery\Criteria; 
-
 require_once(__DIR__.'/ui.php');
 
 // default redirect to self. eg. http://www.colinfurzemusic.com
 $redirect = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST']; 
 
+// ideally redirect to a specific link
 $id = (int)$_GET['id'] ?? null;
 if ($id) {
 	$link = SongLinkQuery::create()
@@ -22,5 +21,6 @@ if ($id) {
 		$redirect = $link->getUrl();
 	}
 }
+
 header("Location: {$redirect}");
 die;
