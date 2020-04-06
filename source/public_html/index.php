@@ -8,7 +8,6 @@ use Propel\Runtime\ActiveQuery\Criteria;
 
 require_once(__DIR__.'/ui.php');
 
-
 $songs = SongQuery::create()
 	->useEpisodeQuery()
 		->orderByUploadDate(Criteria::DESC)

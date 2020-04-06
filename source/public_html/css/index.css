@@ -1,5 +1,6 @@
 .main-table {
 	border-collapse: collapse;
+	background: #f8f8f8 !important;
 }
 
 .main-table > thead > tr > th {
@@ -29,4 +30,15 @@
 /* add vetical line between cells */
 .music-table > tbody > tr > td:not(:last-child) {
 	border-right: 1px solid black;
+}
+
+.link {
+	/* hide underline, otherwise we see lines between icons */
+	text-decoration: none;
+}
+
+.link-img {
+	width: 24px;
+	height: 24px;
+	vertical-align: middle;
 }

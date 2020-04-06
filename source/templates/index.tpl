@@ -9,7 +9,7 @@
 			<th>Song</th>
 			<th>Artist</th>
 			<th>Track #</th>
-			{*<th>Links</th>*}
+			<th>Links</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -20,8 +20,27 @@
 				<td>{$song->getTitle()}</td>
 				<td>{$song->getArtist()}</td>
 				<td>{$song->getTrackNumber()}</td>
-				{*<td></td>*}
-				{*<td><a href="https://revengeofthepsychotronicman.bandcamp.com" target="_blank">Bandcamp</a>, link2, link3</td>*}
+				<td>
+					{foreach from=$song->getSongLinks() item='link'}
+						{* note to self: make sure there is 1 image per title entry in the db *}
+						{assign var='title' value=$link->getTitle()}
+						{* a few overrides.. ublock will block youtube.png facebook.png etc. need to hide it a bit *}
+						{assign var='image' value=$title|strtolower}
+						{if 'youtube' == $image}
+							{assign var='image' value='yt'}
+						{elseif 'facebook' == $image}
+							{assign var='image' value='fb'}
+						{elseif 'instagram' == $image}
+							{assign var='image' value='ig'}
+						{elseif 'twitter' == $image}
+							{assign var='image' value='tw'}
+						{/if}
+						{* ublock also blocks youtube, facebook, etc links. bounce through us first i guess. *} 
+						<a target="_blank" class="link" href="out?id={$link->getTag()}">
+							<img class="link-img" src="/images/links/{$image}.png" alt="{$title}" title="{$title}" />
+						</a>
+					{/foreach}
+				</td>
 			</tr>
 		{/foreach}
 	</tbody>
