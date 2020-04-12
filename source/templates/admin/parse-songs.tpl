@@ -3,7 +3,7 @@
 
 	<h1>{$ep->getTitle()}</h1>
 	<hr />
-	<pre>{$ep->getMusic()}</pre>
+	<pre>{$ep->getDescription()}</pre>
 	<hr />
 	<form method="post">
 		<input type="hidden" name="id" value="{$ep->getId()}" />

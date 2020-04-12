@@ -1,8 +1,12 @@
-Todo bot to fetch episodes
-<hr />
-New episodes<br />
-... <br />
-[start processing]
-<hr />
-Phase 1: parse music info from description<br />
-Phase 2: parse each song from music column- <a href="parse-songs" />Parse Songs</a>
+<h1>Episodes to be processed</h1>
+{if $episodesToProcess}
+	<ul>
+	{foreach from=$episodesToProcess item='ep'}
+		<li>{$ep->getTitle()}</li>
+	{/foreach}
+	</ul>
+	<br />
+	<a href="parse-songs" />Process</a>
+{else}
+	No episodes to process
+{/if}

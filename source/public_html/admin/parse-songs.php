@@ -111,10 +111,10 @@ $template->assign('desc', $desc);
 
 // get next ep to work on
 $episode = EpisodeQuery::create()
-	->filterByMusic(null, Criteria::NOT_EQUAL)
-	->filterByProcessed(2, Criteria::LESS_THAN) // 2 = done this step
+	->filterByProcessed(0) // 2 = done this step
 	->findOne();
 
+// todo fix progress bar
 // stats for progress bar
 $todoEps = EpisodeQuery::create()
 	->filterByMusic(null, Criteria::NOT_EQUAL)
