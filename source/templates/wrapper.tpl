@@ -4,6 +4,7 @@
 		<title>Colin Furze Music</title>
 		<link rel="stylesheet" href="/css/index.css" />
 		<link rel="stylesheet" href="/css/sortable-theme-light.css" />
+		<link rel="canonical" href="https://www.colinfurzemusic.com" />
 		<meta name="description" content="A complete list of all the music used in Colin Furze's videos" />
 	</head>
 	<body>
