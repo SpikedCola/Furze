@@ -12,6 +12,7 @@ $songs = SongQuery::create()
 	->useEpisodeQuery()
 		->orderByUploadDate(Criteria::DESC)
 	->endUse()
+	->orderByTrackNumber(Criteria::ASC)
 	->find();
 
 $template->assign('songs', $songs);
