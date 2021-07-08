@@ -130,4 +130,8 @@ $template->assign('linkPlaces', $linkPlaces);
 
 $template->assign('ep', $episode);
 
+$template->js('jquery-3.6.0.min.js');
+$template->js('admin/parse-songs.js');
+$template->css('admin/parse-songs.css');
+
 $template->display('admin/parse-songs.tpl');

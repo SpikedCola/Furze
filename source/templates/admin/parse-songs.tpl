@@ -5,7 +5,7 @@
 	<hr />
 	<pre>{$ep->getDescription()}</pre>
 	<hr />
-	<form method="post">
+	<form method="post" id="songs">
 		<input type="hidden" name="id" value="{$ep->getId()}" />
 		<table>
 			<tr>
