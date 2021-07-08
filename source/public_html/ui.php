@@ -16,3 +16,9 @@ $template->escape_html = true;
 
 // generic wrapper for all pages, handles adding js/css/title/other globals
 $template->wrapper = 'wrapper.tpl';
+
+$template->css('index.css');
+$template->css('sortable-theme-light.css');
+
+$template->js('ga.js');
+$template->js('sortable.min.js');
