@@ -1,3 +1,12 @@
 .highlight {
-	background-color: #fffbcc;
+	background-color: yellow;
+}
+
+#description2 {
+	margin: 1em 0px 1em 0px; /* margin like pre */
+	font-family: monospace; /* font like pre */
+}
+
+a.clipboard:visited {
+	color: #0000ff; /* make visited clipboard link look like normal link */
 }
