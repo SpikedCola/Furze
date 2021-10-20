@@ -3,7 +3,9 @@
 
 	<h1>{$ep->getTitle()}</h1>
 	<hr />
-	<pre>{$ep->getDescription()}</pre>
+	<pre id="description">{$ep->getDescription()}</pre>
+	<div id="description2"></div>
+	<button id="show-original-btn">Show original</button>
 	<hr />
 	<form method="post" id="songs">
 		<input type="hidden" name="id" value="{$ep->getId()}" />
@@ -19,17 +21,17 @@
 					</th>
 				{/foreach}
 			</tr>
-			{for $idx=0 to 5}
-				<tr>
+			{for $idx=0 to 9}
+				<tr data-id="{$idx}">
 					<td>
 						<input type="hidden" name="songs[{$idx}][track]" value="{$idx+1}" />
 						{$idx+1}
 					</td>
 					<td>
-						<input type="text" name="songs[{$idx}][title]" />
+						<input type="text" class="title" name="songs[{$idx}][title]" />
 					</td>
 					<td>
-						<input type="text" name="songs[{$idx}][artist]" />
+						<input type="text" class="artist" name="songs[{$idx}][artist]" />
 					</td>
 					<td>
 						<input type="text" name="songs[{$idx}][notes]" />
