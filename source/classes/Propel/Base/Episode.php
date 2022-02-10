@@ -105,12 +105,13 @@ abstract class Episode implements ActiveRecordInterface
     /**
      * The value for the music field.
      *
-     * @var        string
+     * @var        string|null
      */
     protected $music;
 
     /**
      * @var        ObjectCollection|ChildSong[] Collection to store aggregation of ChildSong objects.
+     * @phpstan-var ObjectCollection&\Traversable<ChildSong> Collection to store aggregation of ChildSong objects.
      */
     protected $collSongs;
     protected $collSongsPartial;
@@ -126,6 +127,7 @@ abstract class Episode implements ActiveRecordInterface
     /**
      * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildSong[]
+     * @phpstan-var ObjectCollection&\Traversable<ChildSong>
      */
     protected $songsScheduledForDeletion = null;
 
@@ -229,9 +231,7 @@ abstract class Episode implements ActiveRecordInterface
     public function resetModified($col = null)
     {
         if (null !== $col) {
-            if (isset($this->modifiedColumns[$col])) {
-                unset($this->modifiedColumns[$col]);
-            }
+            unset($this->modifiedColumns[$col]);
         } else {
             $this->modifiedColumns = array();
         }
@@ -306,7 +306,7 @@ abstract class Episode implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|Episode The current object, for fluid interface
+     * @return $this The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -320,11 +320,11 @@ abstract class Episode implements ActiveRecordInterface
      *
      * @param  string  $msg
      * @param  int     $priority One of the Propel::LOG_* logging levels
-     * @return boolean
+     * @return void
      */
     protected function log($msg, $priority = Propel::LOG_INFO)
     {
-        return Propel::log(get_class($this) . ': ' . $msg, $priority);
+        Propel::log(get_class($this) . ': ' . $msg, $priority);
     }
 
     /**
@@ -337,15 +337,16 @@ abstract class Episode implements ActiveRecordInterface
      *
      * @param  mixed   $parser                 A AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param  boolean $includeLazyLoadColumns (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
+     * @param  string  $keyType                (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME, TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM. Defaults to TableMap::TYPE_PHPNAME.
      * @return string  The exported data
      */
-    public function exportTo($parser, $includeLazyLoadColumns = true)
+    public function exportTo($parser, $includeLazyLoadColumns = true, $keyType = TableMap::TYPE_PHPNAME)
     {
         if (!$parser instanceof AbstractParser) {
             $parser = AbstractParser::getParser($parser);
         }
 
-        return $parser->fromArray($this->toArray(TableMap::TYPE_PHPNAME, $includeLazyLoadColumns, array(), true));
+        return $parser->fromArray($this->toArray($keyType, $includeLazyLoadColumns, array(), true));
     }
 
     /**
@@ -381,14 +382,16 @@ abstract class Episode implements ActiveRecordInterface
      * Get the [optionally formatted] temporal [upload_date] column value.
      *
      *
-     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
+     * @param string|null $format The date/time format string (either date()-style or strftime()-style).
+     *   If format is NULL, then the raw DateTime object will be returned.
      *
      * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
+     *
+     * @psalm-return ($format is null ? DateTime : string)
      */
-    public function getUploadDate($format = NULL)
+    public function getUploadDate($format = null)
     {
         if ($format === null) {
             return $this->upload_date;
@@ -430,7 +433,7 @@ abstract class Episode implements ActiveRecordInterface
     /**
      * Get the [music] column value.
      *
-     * @return string
+     * @return string|null
      */
     public function getMusic()
     {
@@ -440,7 +443,7 @@ abstract class Episode implements ActiveRecordInterface
     /**
      * Set the value of [id] column.
      *
-     * @param string $v new value
+     * @param string $v New value
      * @return $this|\Episode The current object (for fluent API support)
      */
     public function setId($v)
@@ -460,7 +463,7 @@ abstract class Episode implements ActiveRecordInterface
     /**
      * Sets the value of [upload_date] column to a normalized version of the date/time value specified.
      *
-     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     * @param  string|integer|\DateTimeInterface $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
      * @return $this|\Episode The current object (for fluent API support)
      */
@@ -480,7 +483,7 @@ abstract class Episode implements ActiveRecordInterface
     /**
      * Set the value of [title] column.
      *
-     * @param string $v new value
+     * @param string $v New value
      * @return $this|\Episode The current object (for fluent API support)
      */
     public function setTitle($v)
@@ -500,7 +503,7 @@ abstract class Episode implements ActiveRecordInterface
     /**
      * Set the value of [description] column.
      *
-     * @param string $v new value
+     * @param string $v New value
      * @return $this|\Episode The current object (for fluent API support)
      */
     public function setDescription($v)
@@ -520,7 +523,7 @@ abstract class Episode implements ActiveRecordInterface
     /**
      * Set the value of [processed] column.
      *
-     * @param int $v new value
+     * @param int $v New value
      * @return $this|\Episode The current object (for fluent API support)
      */
     public function setProcessed($v)
@@ -540,7 +543,7 @@ abstract class Episode implements ActiveRecordInterface
     /**
      * Set the value of [music] column.
      *
-     * @param string $v new value
+     * @param string|null $v New value
      * @return $this|\Episode The current object (for fluent API support)
      */
     public function setMusic($v)
@@ -874,7 +877,7 @@ abstract class Episode implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_STR);
                         break;
                     case 'upload_date':
-                        $stmt->bindValue($identifier, $this->upload_date ? $this->upload_date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, $this->upload_date ? $this->upload_date->format("Y-m-d") : null, PDO::PARAM_STR);
                         break;
                     case 'title':
                         $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
@@ -999,7 +1002,7 @@ abstract class Episode implements ActiveRecordInterface
             $keys[5] => $this->getMusic(),
         );
         if ($result[$keys[1]] instanceof \DateTimeInterface) {
-            $result[$keys[1]] = $result[$keys[1]]->format('c');
+            $result[$keys[1]] = $result[$keys[1]]->format('Y-m-d');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1095,7 +1098,7 @@ abstract class Episode implements ActiveRecordInterface
      *
      * @param      array  $arr     An array to populate the object from.
      * @param      string $keyType The type of keys the array uses.
-     * @return void
+     * @return     $this|\Episode
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1119,6 +1122,8 @@ abstract class Episode implements ActiveRecordInterface
         if (array_key_exists($keys[5], $arr)) {
             $this->setMusic($arr[$keys[5]]);
         }
+
+        return $this;
     }
 
      /**
@@ -1322,7 +1327,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('Song' == $relationName) {
+        if ('Song' === $relationName) {
             $this->initSongs();
             return;
         }
@@ -1386,15 +1391,25 @@ abstract class Episode implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @return ObjectCollection|ChildSong[] List of ChildSong objects
+     * @phpstan-return ObjectCollection&\Traversable<ChildSong> List of ChildSong objects
      * @throws PropelException
      */
     public function getSongs(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         $partial = $this->collSongsPartial && !$this->isNew();
-        if (null === $this->collSongs || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collSongs) {
+        if (null === $this->collSongs || null !== $criteria || $partial) {
+            if ($this->isNew()) {
                 // return empty collection
-                $this->initSongs();
+                if (null === $this->collSongs) {
+                    $this->initSongs();
+                } else {
+                    $collectionClassName = SongTableMap::getTableMap()->getCollectionClassName();
+
+                    $collSongs = new $collectionClassName;
+                    $collSongs->setModel('\Song');
+
+                    return $collSongs;
+                }
             } else {
                 $collSongs = ChildSongQuery::create(null, $criteria)
                     ->filterByEpisode($this)
@@ -1612,10 +1627,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
-        if (is_callable('parent::preSave')) {
-            return parent::preSave($con);
-        }
-        return true;
+                return true;
     }
 
     /**
@@ -1624,10 +1636,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-        if (is_callable('parent::postSave')) {
-            parent::postSave($con);
-        }
-    }
+            }
 
     /**
      * Code to be run before inserting to database
@@ -1636,10 +1645,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
-        if (is_callable('parent::preInsert')) {
-            return parent::preInsert($con);
-        }
-        return true;
+                return true;
     }
 
     /**
@@ -1648,10 +1654,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-        if (is_callable('parent::postInsert')) {
-            parent::postInsert($con);
-        }
-    }
+            }
 
     /**
      * Code to be run before updating the object in database
@@ -1660,10 +1663,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
-        if (is_callable('parent::preUpdate')) {
-            return parent::preUpdate($con);
-        }
-        return true;
+                return true;
     }
 
     /**
@@ -1672,10 +1672,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-        if (is_callable('parent::postUpdate')) {
-            parent::postUpdate($con);
-        }
-    }
+            }
 
     /**
      * Code to be run before deleting the object in database
@@ -1684,10 +1681,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
-        if (is_callable('parent::preDelete')) {
-            return parent::preDelete($con);
-        }
-        return true;
+                return true;
     }
 
     /**
@@ -1696,10 +1690,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-        if (is_callable('parent::postDelete')) {
-            parent::postDelete($con);
-        }
-    }
+            }
 
 
     /**
@@ -1729,15 +1720,18 @@ abstract class Episode implements ActiveRecordInterface
 
         if (0 === strpos($name, 'from')) {
             $format = substr($name, 4);
+            $inputData = $params[0];
+            $keyType = $params[1] ?? TableMap::TYPE_PHPNAME;
 
-            return $this->importFrom($format, reset($params));
+            return $this->importFrom($format, $inputData, $keyType);
         }
 
         if (0 === strpos($name, 'to')) {
             $format = substr($name, 2);
-            $includeLazyLoadColumns = isset($params[0]) ? $params[0] : true;
+            $includeLazyLoadColumns = $params[0] ?? true;
+            $keyType = $params[1] ?? TableMap::TYPE_PHPNAME;
 
-            return $this->exportTo($format, $includeLazyLoadColumns);
+            return $this->exportTo($format, $includeLazyLoadColumns, $keyType);
         }
 
         throw new BadMethodCallException(sprintf('Call to undefined method: %s.', $name));

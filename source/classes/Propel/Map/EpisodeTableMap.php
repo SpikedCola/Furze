@@ -24,7 +24,6 @@ use Propel\Runtime\Map\TableMapTrait;
  * For example, the createSelectSql() method checks the type of a given column used in an
  * ORDER BY clause to know whether it needs to apply SQL to make the ORDER BY case-insensitive
  * (i.e. if it's a text column type).
- *
  */
 class EpisodeTableMap extends TableMap
 {
@@ -133,6 +132,57 @@ class EpisodeTableMap extends TableMap
         self::TYPE_FIELDNAME     => array('id' => 0, 'upload_date' => 1, 'title' => 2, 'description' => 3, 'processed' => 4, 'music' => 5, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
+
+    /**
+     * Holds a list of column names and their normalized version.
+     *
+     * @var string[]
+     */
+    protected $normalizedColumnNameMap = [
+        'Id' => 'ID',
+        'Episode.Id' => 'ID',
+        'id' => 'ID',
+        'episode.id' => 'ID',
+        'EpisodeTableMap::COL_ID' => 'ID',
+        'COL_ID' => 'ID',
+        'episodes.id' => 'ID',
+        'UploadDate' => 'UPLOAD_DATE',
+        'Episode.UploadDate' => 'UPLOAD_DATE',
+        'uploadDate' => 'UPLOAD_DATE',
+        'episode.uploadDate' => 'UPLOAD_DATE',
+        'EpisodeTableMap::COL_UPLOAD_DATE' => 'UPLOAD_DATE',
+        'COL_UPLOAD_DATE' => 'UPLOAD_DATE',
+        'upload_date' => 'UPLOAD_DATE',
+        'episodes.upload_date' => 'UPLOAD_DATE',
+        'Title' => 'TITLE',
+        'Episode.Title' => 'TITLE',
+        'title' => 'TITLE',
+        'episode.title' => 'TITLE',
+        'EpisodeTableMap::COL_TITLE' => 'TITLE',
+        'COL_TITLE' => 'TITLE',
+        'episodes.title' => 'TITLE',
+        'Description' => 'DESCRIPTION',
+        'Episode.Description' => 'DESCRIPTION',
+        'description' => 'DESCRIPTION',
+        'episode.description' => 'DESCRIPTION',
+        'EpisodeTableMap::COL_DESCRIPTION' => 'DESCRIPTION',
+        'COL_DESCRIPTION' => 'DESCRIPTION',
+        'episodes.description' => 'DESCRIPTION',
+        'Processed' => 'PROCESSED',
+        'Episode.Processed' => 'PROCESSED',
+        'processed' => 'PROCESSED',
+        'episode.processed' => 'PROCESSED',
+        'EpisodeTableMap::COL_PROCESSED' => 'PROCESSED',
+        'COL_PROCESSED' => 'PROCESSED',
+        'episodes.processed' => 'PROCESSED',
+        'Music' => 'MUSIC',
+        'Episode.Music' => 'MUSIC',
+        'music' => 'MUSIC',
+        'episode.music' => 'MUSIC',
+        'EpisodeTableMap::COL_MUSIC' => 'MUSIC',
+        'COL_MUSIC' => 'MUSIC',
+        'episodes.music' => 'MUSIC',
+    ];
 
     /**
      * Initialize the table attributes and columns
@@ -331,6 +381,36 @@ class EpisodeTableMap extends TableMap
     }
 
     /**
+     * Remove all the columns needed to create a new object.
+     *
+     * Note: any columns that were marked with lazyLoad="true" in the
+     * XML schema will not be removed as they are only loaded on demand.
+     *
+     * @param Criteria $criteria object containing the columns to remove.
+     * @param string   $alias    optional table alias
+     * @throws PropelException Any exceptions caught during processing will be
+     *                         rethrown wrapped into a PropelException.
+     */
+    public static function removeSelectColumns(Criteria $criteria, $alias = null)
+    {
+        if (null === $alias) {
+            $criteria->removeSelectColumn(EpisodeTableMap::COL_ID);
+            $criteria->removeSelectColumn(EpisodeTableMap::COL_UPLOAD_DATE);
+            $criteria->removeSelectColumn(EpisodeTableMap::COL_TITLE);
+            $criteria->removeSelectColumn(EpisodeTableMap::COL_DESCRIPTION);
+            $criteria->removeSelectColumn(EpisodeTableMap::COL_PROCESSED);
+            $criteria->removeSelectColumn(EpisodeTableMap::COL_MUSIC);
+        } else {
+            $criteria->removeSelectColumn($alias . '.id');
+            $criteria->removeSelectColumn($alias . '.upload_date');
+            $criteria->removeSelectColumn($alias . '.title');
+            $criteria->removeSelectColumn($alias . '.description');
+            $criteria->removeSelectColumn($alias . '.processed');
+            $criteria->removeSelectColumn($alias . '.music');
+        }
+    }
+
+    /**
      * Returns the TableMap related to this object.
      * This method is not needed for general use but a specific application could have a need.
      * @return TableMap
@@ -340,17 +420,6 @@ class EpisodeTableMap extends TableMap
     public static function getTableMap()
     {
         return Propel::getServiceContainer()->getDatabaseMap(EpisodeTableMap::DATABASE_NAME)->getTable(EpisodeTableMap::TABLE_NAME);
-    }
-
-    /**
-     * Add a TableMap instance to the database for this tableMap class.
-     */
-    public static function buildTableMap()
-    {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(EpisodeTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(EpisodeTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new EpisodeTableMap());
-        }
     }
 
     /**
@@ -438,6 +507,3 @@ class EpisodeTableMap extends TableMap
     }
 
 } // EpisodeTableMap
-// This is the static code needed to register the TableMap for this table with the main Propel class.
-//
-EpisodeTableMap::buildTableMap();

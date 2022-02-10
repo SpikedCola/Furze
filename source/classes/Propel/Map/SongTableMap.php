@@ -24,7 +24,6 @@ use Propel\Runtime\Map\TableMapTrait;
  * For example, the createSelectSql() method checks the type of a given column used in an
  * ORDER BY clause to know whether it needs to apply SQL to make the ORDER BY case-insensitive
  * (i.e. if it's a text column type).
- *
  */
 class SongTableMap extends TableMap
 {
@@ -133,6 +132,58 @@ class SongTableMap extends TableMap
         self::TYPE_FIELDNAME     => array('id' => 0, 'episode_id' => 1, 'title' => 2, 'artist' => 3, 'track_number' => 4, 'notes' => 5, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
+
+    /**
+     * Holds a list of column names and their normalized version.
+     *
+     * @var string[]
+     */
+    protected $normalizedColumnNameMap = [
+        'Id' => 'ID',
+        'Song.Id' => 'ID',
+        'id' => 'ID',
+        'song.id' => 'ID',
+        'SongTableMap::COL_ID' => 'ID',
+        'COL_ID' => 'ID',
+        'songs.id' => 'ID',
+        'EpisodeId' => 'EPISODE_ID',
+        'Song.EpisodeId' => 'EPISODE_ID',
+        'episodeId' => 'EPISODE_ID',
+        'song.episodeId' => 'EPISODE_ID',
+        'SongTableMap::COL_EPISODE_ID' => 'EPISODE_ID',
+        'COL_EPISODE_ID' => 'EPISODE_ID',
+        'episode_id' => 'EPISODE_ID',
+        'songs.episode_id' => 'EPISODE_ID',
+        'Title' => 'TITLE',
+        'Song.Title' => 'TITLE',
+        'title' => 'TITLE',
+        'song.title' => 'TITLE',
+        'SongTableMap::COL_TITLE' => 'TITLE',
+        'COL_TITLE' => 'TITLE',
+        'songs.title' => 'TITLE',
+        'Artist' => 'ARTIST',
+        'Song.Artist' => 'ARTIST',
+        'artist' => 'ARTIST',
+        'song.artist' => 'ARTIST',
+        'SongTableMap::COL_ARTIST' => 'ARTIST',
+        'COL_ARTIST' => 'ARTIST',
+        'songs.artist' => 'ARTIST',
+        'TrackNumber' => 'TRACK_NUMBER',
+        'Song.TrackNumber' => 'TRACK_NUMBER',
+        'trackNumber' => 'TRACK_NUMBER',
+        'song.trackNumber' => 'TRACK_NUMBER',
+        'SongTableMap::COL_TRACK_NUMBER' => 'TRACK_NUMBER',
+        'COL_TRACK_NUMBER' => 'TRACK_NUMBER',
+        'track_number' => 'TRACK_NUMBER',
+        'songs.track_number' => 'TRACK_NUMBER',
+        'Notes' => 'NOTES',
+        'Song.Notes' => 'NOTES',
+        'notes' => 'NOTES',
+        'song.notes' => 'NOTES',
+        'SongTableMap::COL_NOTES' => 'NOTES',
+        'COL_NOTES' => 'NOTES',
+        'songs.notes' => 'NOTES',
+    ];
 
     /**
      * Initialize the table attributes and columns
@@ -338,6 +389,36 @@ class SongTableMap extends TableMap
     }
 
     /**
+     * Remove all the columns needed to create a new object.
+     *
+     * Note: any columns that were marked with lazyLoad="true" in the
+     * XML schema will not be removed as they are only loaded on demand.
+     *
+     * @param Criteria $criteria object containing the columns to remove.
+     * @param string   $alias    optional table alias
+     * @throws PropelException Any exceptions caught during processing will be
+     *                         rethrown wrapped into a PropelException.
+     */
+    public static function removeSelectColumns(Criteria $criteria, $alias = null)
+    {
+        if (null === $alias) {
+            $criteria->removeSelectColumn(SongTableMap::COL_ID);
+            $criteria->removeSelectColumn(SongTableMap::COL_EPISODE_ID);
+            $criteria->removeSelectColumn(SongTableMap::COL_TITLE);
+            $criteria->removeSelectColumn(SongTableMap::COL_ARTIST);
+            $criteria->removeSelectColumn(SongTableMap::COL_TRACK_NUMBER);
+            $criteria->removeSelectColumn(SongTableMap::COL_NOTES);
+        } else {
+            $criteria->removeSelectColumn($alias . '.id');
+            $criteria->removeSelectColumn($alias . '.episode_id');
+            $criteria->removeSelectColumn($alias . '.title');
+            $criteria->removeSelectColumn($alias . '.artist');
+            $criteria->removeSelectColumn($alias . '.track_number');
+            $criteria->removeSelectColumn($alias . '.notes');
+        }
+    }
+
+    /**
      * Returns the TableMap related to this object.
      * This method is not needed for general use but a specific application could have a need.
      * @return TableMap
@@ -347,17 +428,6 @@ class SongTableMap extends TableMap
     public static function getTableMap()
     {
         return Propel::getServiceContainer()->getDatabaseMap(SongTableMap::DATABASE_NAME)->getTable(SongTableMap::TABLE_NAME);
-    }
-
-    /**
-     * Add a TableMap instance to the database for this tableMap class.
-     */
-    public static function buildTableMap()
-    {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(SongTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(SongTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new SongTableMap());
-        }
     }
 
     /**
@@ -449,6 +519,3 @@ class SongTableMap extends TableMap
     }
 
 } // SongTableMap
-// This is the static code needed to register the TableMap for this table with the main Propel class.
-//
-SongTableMap::buildTableMap();

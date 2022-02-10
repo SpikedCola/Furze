@@ -24,7 +24,6 @@ use Propel\Runtime\Map\TableMapTrait;
  * For example, the createSelectSql() method checks the type of a given column used in an
  * ORDER BY clause to know whether it needs to apply SQL to make the ORDER BY case-insensitive
  * (i.e. if it's a text column type).
- *
  */
 class SongLinkTableMap extends TableMap
 {
@@ -123,6 +122,43 @@ class SongLinkTableMap extends TableMap
         self::TYPE_FIELDNAME     => array('tag' => 0, 'song_id' => 1, 'url' => 2, 'title' => 3, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
+
+    /**
+     * Holds a list of column names and their normalized version.
+     *
+     * @var string[]
+     */
+    protected $normalizedColumnNameMap = [
+        'Tag' => 'TAG',
+        'SongLink.Tag' => 'TAG',
+        'tag' => 'TAG',
+        'songLink.tag' => 'TAG',
+        'SongLinkTableMap::COL_TAG' => 'TAG',
+        'COL_TAG' => 'TAG',
+        'song_links.tag' => 'TAG',
+        'SongId' => 'SONG_ID',
+        'SongLink.SongId' => 'SONG_ID',
+        'songId' => 'SONG_ID',
+        'songLink.songId' => 'SONG_ID',
+        'SongLinkTableMap::COL_SONG_ID' => 'SONG_ID',
+        'COL_SONG_ID' => 'SONG_ID',
+        'song_id' => 'SONG_ID',
+        'song_links.song_id' => 'SONG_ID',
+        'Url' => 'URL',
+        'SongLink.Url' => 'URL',
+        'url' => 'URL',
+        'songLink.url' => 'URL',
+        'SongLinkTableMap::COL_URL' => 'URL',
+        'COL_URL' => 'URL',
+        'song_links.url' => 'URL',
+        'Title' => 'TITLE',
+        'SongLink.Title' => 'TITLE',
+        'title' => 'TITLE',
+        'songLink.title' => 'TITLE',
+        'SongLinkTableMap::COL_TITLE' => 'TITLE',
+        'COL_TITLE' => 'TITLE',
+        'song_links.title' => 'TITLE',
+    ];
 
     /**
      * Initialize the table attributes and columns
@@ -315,6 +351,32 @@ class SongLinkTableMap extends TableMap
     }
 
     /**
+     * Remove all the columns needed to create a new object.
+     *
+     * Note: any columns that were marked with lazyLoad="true" in the
+     * XML schema will not be removed as they are only loaded on demand.
+     *
+     * @param Criteria $criteria object containing the columns to remove.
+     * @param string   $alias    optional table alias
+     * @throws PropelException Any exceptions caught during processing will be
+     *                         rethrown wrapped into a PropelException.
+     */
+    public static function removeSelectColumns(Criteria $criteria, $alias = null)
+    {
+        if (null === $alias) {
+            $criteria->removeSelectColumn(SongLinkTableMap::COL_TAG);
+            $criteria->removeSelectColumn(SongLinkTableMap::COL_SONG_ID);
+            $criteria->removeSelectColumn(SongLinkTableMap::COL_URL);
+            $criteria->removeSelectColumn(SongLinkTableMap::COL_TITLE);
+        } else {
+            $criteria->removeSelectColumn($alias . '.tag');
+            $criteria->removeSelectColumn($alias . '.song_id');
+            $criteria->removeSelectColumn($alias . '.url');
+            $criteria->removeSelectColumn($alias . '.title');
+        }
+    }
+
+    /**
      * Returns the TableMap related to this object.
      * This method is not needed for general use but a specific application could have a need.
      * @return TableMap
@@ -324,17 +386,6 @@ class SongLinkTableMap extends TableMap
     public static function getTableMap()
     {
         return Propel::getServiceContainer()->getDatabaseMap(SongLinkTableMap::DATABASE_NAME)->getTable(SongLinkTableMap::TABLE_NAME);
-    }
-
-    /**
-     * Add a TableMap instance to the database for this tableMap class.
-     */
-    public static function buildTableMap()
-    {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(SongLinkTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(SongLinkTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new SongLinkTableMap());
-        }
     }
 
     /**
@@ -426,6 +477,3 @@ class SongLinkTableMap extends TableMap
     }
 
 } // SongLinkTableMap
-// This is the static code needed to register the TableMap for this table with the main Propel class.
-//
-SongLinkTableMap::buildTableMap();

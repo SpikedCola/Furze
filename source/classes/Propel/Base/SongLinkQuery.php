@@ -50,13 +50,13 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     \SongQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
- * @method     ChildSongLink findOne(ConnectionInterface $con = null) Return the first ChildSongLink matching the query
+ * @method     ChildSongLink|null findOne(ConnectionInterface $con = null) Return the first ChildSongLink matching the query
  * @method     ChildSongLink findOneOrCreate(ConnectionInterface $con = null) Return the first ChildSongLink matching the query, or a new ChildSongLink object populated from the query conditions when no match is found
  *
- * @method     ChildSongLink findOneByTag(int $tag) Return the first ChildSongLink filtered by the tag column
- * @method     ChildSongLink findOneBySongId(int $song_id) Return the first ChildSongLink filtered by the song_id column
- * @method     ChildSongLink findOneByUrl(string $url) Return the first ChildSongLink filtered by the url column
- * @method     ChildSongLink findOneByTitle(string $title) Return the first ChildSongLink filtered by the title column *
+ * @method     ChildSongLink|null findOneByTag(int $tag) Return the first ChildSongLink filtered by the tag column
+ * @method     ChildSongLink|null findOneBySongId(int $song_id) Return the first ChildSongLink filtered by the song_id column
+ * @method     ChildSongLink|null findOneByUrl(string $url) Return the first ChildSongLink filtered by the url column
+ * @method     ChildSongLink|null findOneByTitle(string $title) Return the first ChildSongLink filtered by the title column *
 
  * @method     ChildSongLink requirePk($key, ConnectionInterface $con = null) Return the ChildSongLink by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSongLink requireOne(ConnectionInterface $con = null) Return the first ChildSongLink matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -67,11 +67,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSongLink requireOneByTitle(string $title) Return the first ChildSongLink filtered by the title column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildSongLink[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildSongLink objects based on current ModelCriteria
+ * @psalm-method ObjectCollection&\Traversable<ChildSongLink> find(ConnectionInterface $con = null) Return ChildSongLink objects based on current ModelCriteria
  * @method     ChildSongLink[]|ObjectCollection findByTag(int $tag) Return ChildSongLink objects filtered by the tag column
+ * @psalm-method ObjectCollection&\Traversable<ChildSongLink> findByTag(int $tag) Return ChildSongLink objects filtered by the tag column
  * @method     ChildSongLink[]|ObjectCollection findBySongId(int $song_id) Return ChildSongLink objects filtered by the song_id column
+ * @psalm-method ObjectCollection&\Traversable<ChildSongLink> findBySongId(int $song_id) Return ChildSongLink objects filtered by the song_id column
  * @method     ChildSongLink[]|ObjectCollection findByUrl(string $url) Return ChildSongLink objects filtered by the url column
+ * @psalm-method ObjectCollection&\Traversable<ChildSongLink> findByUrl(string $url) Return ChildSongLink objects filtered by the url column
  * @method     ChildSongLink[]|ObjectCollection findByTitle(string $title) Return ChildSongLink objects filtered by the title column
+ * @psalm-method ObjectCollection&\Traversable<ChildSongLink> findByTitle(string $title) Return ChildSongLink objects filtered by the title column
  * @method     ChildSongLink[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @psalm-method \Propel\Runtime\Util\PropelModelPager&\Traversable<ChildSongLink> paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
 abstract class SongLinkQuery extends ModelCriteria
@@ -470,6 +476,61 @@ abstract class SongLinkQuery extends ModelCriteria
             ->useQuery($relationAlias ? $relationAlias : 'Song', '\SongQuery');
     }
 
+    /**
+     * Use the Song relation Song object
+     *
+     * @param callable(\SongQuery):\SongQuery $callable A function working on the related query
+     *
+     * @param string|null $relationAlias optional alias for the relation
+     *
+     * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this
+     */
+    public function withSongQuery(
+        callable $callable,
+        string $relationAlias = null,
+        ?string $joinType = Criteria::INNER_JOIN
+    ) {
+        $relatedQuery = $this->useSongQuery(
+            $relationAlias,
+            $joinType
+        );
+        $callable($relatedQuery);
+        $relatedQuery->endUse();
+
+        return $this;
+    }
+    /**
+     * Use the relation to Song table for an EXISTS query.
+     *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
+     *
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string $typeOfExists Either ExistsCriterion::TYPE_EXISTS or ExistsCriterion::TYPE_NOT_EXISTS
+     *
+     * @return \SongQuery The inner query object of the EXISTS statement
+     */
+    public function useSongExistsQuery($modelAlias = null, $queryClass = null, $typeOfExists = 'EXISTS')
+    {
+        return $this->useExistsQuery('Song', $modelAlias, $queryClass, $typeOfExists);
+    }
+
+    /**
+     * Use the relation to Song table for a NOT EXISTS query.
+     *
+     * @see useSongExistsQuery()
+     *
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     *
+     * @return \SongQuery The inner query object of the NOT EXISTS statement
+     */
+    public function useSongNotExistsQuery($modelAlias = null, $queryClass = null)
+    {
+        return $this->useExistsQuery('Song', $modelAlias, $queryClass, 'NOT EXISTS');
+    }
     /**
      * Exclude object from result
      *

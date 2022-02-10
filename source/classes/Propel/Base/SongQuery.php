@@ -64,15 +64,15 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     \EpisodeQuery|\SongLinkQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
- * @method     ChildSong findOne(ConnectionInterface $con = null) Return the first ChildSong matching the query
+ * @method     ChildSong|null findOne(ConnectionInterface $con = null) Return the first ChildSong matching the query
  * @method     ChildSong findOneOrCreate(ConnectionInterface $con = null) Return the first ChildSong matching the query, or a new ChildSong object populated from the query conditions when no match is found
  *
- * @method     ChildSong findOneById(int $id) Return the first ChildSong filtered by the id column
- * @method     ChildSong findOneByEpisodeId(string $episode_id) Return the first ChildSong filtered by the episode_id column
- * @method     ChildSong findOneByTitle(string $title) Return the first ChildSong filtered by the title column
- * @method     ChildSong findOneByArtist(string $artist) Return the first ChildSong filtered by the artist column
- * @method     ChildSong findOneByTrackNumber(int $track_number) Return the first ChildSong filtered by the track_number column
- * @method     ChildSong findOneByNotes(string $notes) Return the first ChildSong filtered by the notes column *
+ * @method     ChildSong|null findOneById(int $id) Return the first ChildSong filtered by the id column
+ * @method     ChildSong|null findOneByEpisodeId(string $episode_id) Return the first ChildSong filtered by the episode_id column
+ * @method     ChildSong|null findOneByTitle(string $title) Return the first ChildSong filtered by the title column
+ * @method     ChildSong|null findOneByArtist(string $artist) Return the first ChildSong filtered by the artist column
+ * @method     ChildSong|null findOneByTrackNumber(int $track_number) Return the first ChildSong filtered by the track_number column
+ * @method     ChildSong|null findOneByNotes(string $notes) Return the first ChildSong filtered by the notes column *
 
  * @method     ChildSong requirePk($key, ConnectionInterface $con = null) Return the ChildSong by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSong requireOne(ConnectionInterface $con = null) Return the first ChildSong matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -85,13 +85,21 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSong requireOneByNotes(string $notes) Return the first ChildSong filtered by the notes column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildSong[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildSong objects based on current ModelCriteria
+ * @psalm-method ObjectCollection&\Traversable<ChildSong> find(ConnectionInterface $con = null) Return ChildSong objects based on current ModelCriteria
  * @method     ChildSong[]|ObjectCollection findById(int $id) Return ChildSong objects filtered by the id column
+ * @psalm-method ObjectCollection&\Traversable<ChildSong> findById(int $id) Return ChildSong objects filtered by the id column
  * @method     ChildSong[]|ObjectCollection findByEpisodeId(string $episode_id) Return ChildSong objects filtered by the episode_id column
+ * @psalm-method ObjectCollection&\Traversable<ChildSong> findByEpisodeId(string $episode_id) Return ChildSong objects filtered by the episode_id column
  * @method     ChildSong[]|ObjectCollection findByTitle(string $title) Return ChildSong objects filtered by the title column
+ * @psalm-method ObjectCollection&\Traversable<ChildSong> findByTitle(string $title) Return ChildSong objects filtered by the title column
  * @method     ChildSong[]|ObjectCollection findByArtist(string $artist) Return ChildSong objects filtered by the artist column
+ * @psalm-method ObjectCollection&\Traversable<ChildSong> findByArtist(string $artist) Return ChildSong objects filtered by the artist column
  * @method     ChildSong[]|ObjectCollection findByTrackNumber(int $track_number) Return ChildSong objects filtered by the track_number column
+ * @psalm-method ObjectCollection&\Traversable<ChildSong> findByTrackNumber(int $track_number) Return ChildSong objects filtered by the track_number column
  * @method     ChildSong[]|ObjectCollection findByNotes(string $notes) Return ChildSong objects filtered by the notes column
+ * @psalm-method ObjectCollection&\Traversable<ChildSong> findByNotes(string $notes) Return ChildSong objects filtered by the notes column
  * @method     ChildSong[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @psalm-method \Propel\Runtime\Util\PropelModelPager&\Traversable<ChildSong> paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
 abstract class SongQuery extends ModelCriteria
@@ -539,6 +547,61 @@ abstract class SongQuery extends ModelCriteria
     }
 
     /**
+     * Use the Episode relation Episode object
+     *
+     * @param callable(\EpisodeQuery):\EpisodeQuery $callable A function working on the related query
+     *
+     * @param string|null $relationAlias optional alias for the relation
+     *
+     * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this
+     */
+    public function withEpisodeQuery(
+        callable $callable,
+        string $relationAlias = null,
+        ?string $joinType = Criteria::INNER_JOIN
+    ) {
+        $relatedQuery = $this->useEpisodeQuery(
+            $relationAlias,
+            $joinType
+        );
+        $callable($relatedQuery);
+        $relatedQuery->endUse();
+
+        return $this;
+    }
+    /**
+     * Use the relation to Episode table for an EXISTS query.
+     *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
+     *
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string $typeOfExists Either ExistsCriterion::TYPE_EXISTS or ExistsCriterion::TYPE_NOT_EXISTS
+     *
+     * @return \EpisodeQuery The inner query object of the EXISTS statement
+     */
+    public function useEpisodeExistsQuery($modelAlias = null, $queryClass = null, $typeOfExists = 'EXISTS')
+    {
+        return $this->useExistsQuery('Episode', $modelAlias, $queryClass, $typeOfExists);
+    }
+
+    /**
+     * Use the relation to Episode table for a NOT EXISTS query.
+     *
+     * @see useEpisodeExistsQuery()
+     *
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     *
+     * @return \EpisodeQuery The inner query object of the NOT EXISTS statement
+     */
+    public function useEpisodeNotExistsQuery($modelAlias = null, $queryClass = null)
+    {
+        return $this->useExistsQuery('Episode', $modelAlias, $queryClass, 'NOT EXISTS');
+    }
+    /**
      * Filter the query by a related \SongLink object
      *
      * @param \SongLink|ObjectCollection $songLink the related object to use as filter
@@ -611,6 +674,61 @@ abstract class SongQuery extends ModelCriteria
             ->useQuery($relationAlias ? $relationAlias : 'SongLink', '\SongLinkQuery');
     }
 
+    /**
+     * Use the SongLink relation SongLink object
+     *
+     * @param callable(\SongLinkQuery):\SongLinkQuery $callable A function working on the related query
+     *
+     * @param string|null $relationAlias optional alias for the relation
+     *
+     * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this
+     */
+    public function withSongLinkQuery(
+        callable $callable,
+        string $relationAlias = null,
+        ?string $joinType = Criteria::INNER_JOIN
+    ) {
+        $relatedQuery = $this->useSongLinkQuery(
+            $relationAlias,
+            $joinType
+        );
+        $callable($relatedQuery);
+        $relatedQuery->endUse();
+
+        return $this;
+    }
+    /**
+     * Use the relation to SongLink table for an EXISTS query.
+     *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
+     *
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string $typeOfExists Either ExistsCriterion::TYPE_EXISTS or ExistsCriterion::TYPE_NOT_EXISTS
+     *
+     * @return \SongLinkQuery The inner query object of the EXISTS statement
+     */
+    public function useSongLinkExistsQuery($modelAlias = null, $queryClass = null, $typeOfExists = 'EXISTS')
+    {
+        return $this->useExistsQuery('SongLink', $modelAlias, $queryClass, $typeOfExists);
+    }
+
+    /**
+     * Use the relation to SongLink table for a NOT EXISTS query.
+     *
+     * @see useSongLinkExistsQuery()
+     *
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     *
+     * @return \SongLinkQuery The inner query object of the NOT EXISTS statement
+     */
+    public function useSongLinkNotExistsQuery($modelAlias = null, $queryClass = null)
+    {
+        return $this->useExistsQuery('SongLink', $modelAlias, $queryClass, 'NOT EXISTS');
+    }
     /**
      * Exclude object from result
      *

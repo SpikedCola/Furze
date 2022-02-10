@@ -8,9 +8,12 @@ require_once(__DIR__.'/../../../credentials.php');
 return [
     'propel' => [
         'paths' => [
+			// new version of propel conf requires a separate file for table maps. 
+			// this will change on every build of propel. need to tell propel
+			// to store this file in /source/, next to propel.php
+			'loaderScriptDir' => '../../../',
             // The directory where Propel expects to find your `schema.xml` file.
             'schemaDir' => '../../../../database/',
-
             // The directory where Propel should output generated object model classes.
             'phpDir' => '../../Propel',
         ],

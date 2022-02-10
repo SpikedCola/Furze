@@ -9,7 +9,7 @@
 require_once(__DIR__.'/credentials.php');
 
 $serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
-$serviceContainer->checkVersion('2.0.0-dev');
+$serviceContainer->checkVersion(2);
 $serviceContainer->setAdapterClass('default', 'mysql');
 $manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
 $manager->setConfiguration(array (
@@ -33,3 +33,5 @@ $manager->setConfiguration(array (
 $manager->setName('default');
 $serviceContainer->setConnectionManager('default', $manager);
 $serviceContainer->setDefaultDatasource('default');
+// new: propel now generates a map of table info every "build". expect it to change.
+require_once(__DIR__.'/loadDatabase.php');
