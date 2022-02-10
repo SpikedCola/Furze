@@ -6,6 +6,6 @@
         "phpmailer/phpmailer": "^6.1"
     },
     "autoload": {
-        "classmap": ["Propel/"]
+      "psr-4": { "": "source/classes/Propel/" }
     }
 }
