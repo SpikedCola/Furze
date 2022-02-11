@@ -1,12 +1,17 @@
 {
-    "require": {
-	"smarty/smarty": "^4.0",
-	"propel/propel": "~2.0@dev",
-	"google/apiclient": "^2.0",
-        "phpmailer/phpmailer": "^6.1",
-        "symfony/finder": "^5.4"
-    },
-    "autoload": {
-      "psr-4": { "": "source/classes/Propel/" }
-    }
+	"config": {
+		"vendor-dir": "source/classes/vendor"
+	},
+	"require": {
+		"smarty/smarty": "^4.0",
+		"propel/propel": "~2.0@dev",
+		"google/apiclient": "^2.0",
+		"phpmailer/phpmailer": "^6.1",
+		"symfony/finder": "^5.4"
+	},
+	"autoload": {
+		"psr-4": {
+			"": "source/classes/Propel/"
+		}
+	}
 }
