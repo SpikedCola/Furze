@@ -1,13 +1,20 @@
-propel instructions (using example project ticketscraper)
+propel instructions
 
-- make table/add/change columns/etc phpmyadmin/wherever
-- if just removing a column, you can jump to modifying `database\schema.xml` (delete the appropriate row). otherwise,
-- `cd TicketScraper\source\classes\vendor\bin`
-- run `propel database:reverse` to dump database
-  - this generates `TicketScraper\source\classes\vendor\bin\generated-reversed-database\schema.xml`
-- modify `TicketScraper\database\schema.xml` using `generated-reversed-database\schema.xml` as a reference
-- once happy, run `propel build` to build classes using schema.xml
+installation
+- install composer if not already done - `cd [repository root]; composer update`.
+- copy `database/propel.php` to `source/classes/vendor/bin/`.
+- double-check your `source/config.php` file making sure database credentials are correct.
 
-if the class name or namespace has changed, or a new table has been added:
-- `cd TicketScraper\source\classes`
-- run `composer dump-autoload` to generate autoloader related stuff (todo: not have to do this)
+making changes to existing schema.xml
+- modify `database/schema.xml` as necessary
+- cd to `source/classes/vendor/bin/`
+- run `propel build` to rebuild the classes in `source/classes/Propel/`. note that any changes made to the skeleton classes in 
+`source/classes/Propel/` will be kept and not overwritten. however changes inside `source/classes/Propel/{Base,Map}` will be overwritten. 
+typically these are not touched, and all changes kept to the skeleton classes.
+
+reverse-engineering an existing database, to create schema.xml for you
+- make table in phpmyadmin, add/change columns, whatever.
+- cd to `source/classes/vendor/bin/`
+- run `propel database:reverse`. this generates `source/classes/vendor/bin/generated-reversed-database/schema.xml`
+- create/modify `database/schema.xml` using `source/classes/vendor/bin/generated-reversed-database/schema.xml` as a reference
+- once happy, run `propel build` as above to build classes from schema.xml

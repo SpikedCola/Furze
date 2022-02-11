@@ -1,9 +1,5 @@
 on a fresh install, perform the following to install composer and dependencies
 
-- install composer
-- cd to source/classes/
-- composer update
-- copy database/propel.php to source/classes/vendor/bin/
-
-- cd to source/classes/
-- (not sure if we have to do this - test) run `composer dump-autoload` to generate autoloader related stuff (todo: not have to do this)
+- install composer: https://getcomposer.org/download/
+- cd to repository root
+- run `composer update`
