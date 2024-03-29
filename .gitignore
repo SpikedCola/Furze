@@ -1,10 +1,4 @@
 /nbproject
-/source/templates_c
 /source/credentials.php
-/source/cache
-/source/classes/vendor/bin/generated-conf/config.php
-composer.lock
-vendor/
-_cache/
-_compiled/
+/source/vendor/
 /source/.htpasswd

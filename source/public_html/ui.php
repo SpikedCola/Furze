@@ -9,7 +9,7 @@ header('Content-Type: text/html; charset=utf-8');
 $disableTemplateCaching = true;
 
 // base template object
-$template = new Template(__DIR__.'/../templates/', __DIR__.'/../templates/_compiled/', __DIR__.'/../templates/_cache/', $disableTemplateCaching);
+$template = new Template(__DIR__.'/../templates/', __DIR__.'/../../cache/templates_compiled/', __DIR__.'/../../cache/templates_cache/', $disableTemplateCaching);
 
 // auto escape all stuff (dont need {{}} any more!)
 $template->escape_html = true;

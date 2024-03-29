@@ -1,6 +1,6 @@
 {
 	"config": {
-		"vendor-dir": "source/classes/vendor"
+		"vendor-dir": "vendor/"
 	},
 	"require": {
 		"smarty/smarty": "^4.0",
@@ -11,7 +11,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"": "source/classes/Propel/"
+			"": "classes/Propel/"
 		}
 	}
 }

@@ -33,110 +33,119 @@ class EpisodeTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.EpisodeTableMap';
+    public const CLASS_NAME = '.Map.EpisodeTableMap';
 
     /**
      * The default database name for this class
      */
-    const DATABASE_NAME = 'default';
+    public const DATABASE_NAME = 'default';
 
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'episodes';
+    public const TABLE_NAME = 'episodes';
+
+    /**
+     * The PHP name of this class (PascalCase)
+     */
+    public const TABLE_PHP_NAME = 'Episode';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Episode';
+    public const OM_CLASS = '\\Episode';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Episode';
+    public const CLASS_DEFAULT = 'Episode';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    public const NUM_COLUMNS = 6;
 
     /**
      * The number of lazy-loaded columns
      */
-    const NUM_LAZY_LOAD_COLUMNS = 0;
+    public const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    public const NUM_HYDRATE_COLUMNS = 6;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'episodes.id';
+    public const COL_ID = 'episodes.id';
 
     /**
      * the column name for the upload_date field
      */
-    const COL_UPLOAD_DATE = 'episodes.upload_date';
+    public const COL_UPLOAD_DATE = 'episodes.upload_date';
 
     /**
      * the column name for the title field
      */
-    const COL_TITLE = 'episodes.title';
+    public const COL_TITLE = 'episodes.title';
 
     /**
      * the column name for the description field
      */
-    const COL_DESCRIPTION = 'episodes.description';
+    public const COL_DESCRIPTION = 'episodes.description';
 
     /**
      * the column name for the processed field
      */
-    const COL_PROCESSED = 'episodes.processed';
+    public const COL_PROCESSED = 'episodes.processed';
 
     /**
      * the column name for the music field
      */
-    const COL_MUSIC = 'episodes.music';
+    public const COL_MUSIC = 'episodes.music';
 
     /**
      * The default string format for model objects of the related table
      */
-    const DEFAULT_STRING_FORMAT = 'YAML';
+    public const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
      * holds an array of fieldnames
      *
      * first dimension keys are the type constants
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
+     *
+     * @var array<string, mixed>
      */
-    protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'UploadDate', 'Title', 'Description', 'Processed', 'Music', ),
-        self::TYPE_CAMELNAME     => array('id', 'uploadDate', 'title', 'description', 'processed', 'music', ),
-        self::TYPE_COLNAME       => array(EpisodeTableMap::COL_ID, EpisodeTableMap::COL_UPLOAD_DATE, EpisodeTableMap::COL_TITLE, EpisodeTableMap::COL_DESCRIPTION, EpisodeTableMap::COL_PROCESSED, EpisodeTableMap::COL_MUSIC, ),
-        self::TYPE_FIELDNAME     => array('id', 'upload_date', 'title', 'description', 'processed', 'music', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
-    );
+    protected static $fieldNames = [
+        self::TYPE_PHPNAME       => ['Id', 'UploadDate', 'Title', 'Description', 'Processed', 'Music', ],
+        self::TYPE_CAMELNAME     => ['id', 'uploadDate', 'title', 'description', 'processed', 'music', ],
+        self::TYPE_COLNAME       => [EpisodeTableMap::COL_ID, EpisodeTableMap::COL_UPLOAD_DATE, EpisodeTableMap::COL_TITLE, EpisodeTableMap::COL_DESCRIPTION, EpisodeTableMap::COL_PROCESSED, EpisodeTableMap::COL_MUSIC, ],
+        self::TYPE_FIELDNAME     => ['id', 'upload_date', 'title', 'description', 'processed', 'music', ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, ]
+    ];
 
     /**
      * holds an array of keys for quick access to the fieldnames array
      *
      * first dimension keys are the type constants
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
+     *
+     * @var array<string, mixed>
      */
-    protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'UploadDate' => 1, 'Title' => 2, 'Description' => 3, 'Processed' => 4, 'Music' => 5, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'uploadDate' => 1, 'title' => 2, 'description' => 3, 'processed' => 4, 'music' => 5, ),
-        self::TYPE_COLNAME       => array(EpisodeTableMap::COL_ID => 0, EpisodeTableMap::COL_UPLOAD_DATE => 1, EpisodeTableMap::COL_TITLE => 2, EpisodeTableMap::COL_DESCRIPTION => 3, EpisodeTableMap::COL_PROCESSED => 4, EpisodeTableMap::COL_MUSIC => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'upload_date' => 1, 'title' => 2, 'description' => 3, 'processed' => 4, 'music' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
-    );
+    protected static $fieldKeys = [
+        self::TYPE_PHPNAME       => ['Id' => 0, 'UploadDate' => 1, 'Title' => 2, 'Description' => 3, 'Processed' => 4, 'Music' => 5, ],
+        self::TYPE_CAMELNAME     => ['id' => 0, 'uploadDate' => 1, 'title' => 2, 'description' => 3, 'processed' => 4, 'music' => 5, ],
+        self::TYPE_COLNAME       => [EpisodeTableMap::COL_ID => 0, EpisodeTableMap::COL_UPLOAD_DATE => 1, EpisodeTableMap::COL_TITLE => 2, EpisodeTableMap::COL_DESCRIPTION => 3, EpisodeTableMap::COL_PROCESSED => 4, EpisodeTableMap::COL_MUSIC => 5, ],
+        self::TYPE_FIELDNAME     => ['id' => 0, 'upload_date' => 1, 'title' => 2, 'description' => 3, 'processed' => 4, 'music' => 5, ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, ]
+    ];
 
     /**
      * Holds a list of column names and their normalized version.
      *
-     * @var string[]
+     * @var array<string>
      */
     protected $normalizedColumnNameMap = [
         'Id' => 'ID',
@@ -189,9 +198,9 @@ class EpisodeTableMap extends TableMap
      * Relations are not initialized by this method since they are lazy loaded
      *
      * @return void
-     * @throws PropelException
+     * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function initialize()
+    public function initialize(): void
     {
         // attributes
         $this->setName('episodes');
@@ -207,12 +216,14 @@ class EpisodeTableMap extends TableMap
         $this->addColumn('description', 'Description', 'LONGVARCHAR', true, null, null);
         $this->addColumn('processed', 'Processed', 'INTEGER', true, null, 0);
         $this->addColumn('music', 'Music', 'LONGVARCHAR', false, null, null);
-    } // initialize()
+    }
 
     /**
      * Build the RelationMap objects for this table relationships
+     *
+     * @return void
      */
-    public function buildRelations()
+    public function buildRelations(): void
     {
         $this->addRelation('Song', '\\Song', RelationMap::ONE_TO_MANY, array (
   0 =>
@@ -221,7 +232,7 @@ class EpisodeTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'Songs', false);
-    } // buildRelations()
+    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -229,14 +240,14 @@ class EpisodeTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
-     * @param array  $row       resultset row.
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row Resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
-     * @return string The primary key hash of the row
+     * @return string|null The primary key hash of the row
      */
-    public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
+    public static function getPrimaryKeyHashFromRow(array $row, int $offset = 0, string $indexType = TableMap::TYPE_NUM): ?string
     {
         // If the PK cannot be derived from the row, return NULL.
         if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
@@ -251,14 +262,14 @@ class EpisodeTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, an array of the primary key columns will be returned.
      *
-     * @param array  $row       resultset row.
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row Resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
      */
-    public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
+    public static function getPrimaryKeyFromRow(array $row, int $offset = 0, string $indexType = TableMap::TYPE_NUM)
     {
         return (string) $row[
             $indexType == TableMap::TYPE_NUM
@@ -275,10 +286,10 @@ class EpisodeTableMap extends TableMap
      * relative to a location on the PHP include_path.
      * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
      *
-     * @param boolean $withPrefix Whether or not to return the path with the class name
+     * @param bool $withPrefix Whether to return the path with the class name
      * @return string path.to.ClassName
      */
-    public static function getOMClass($withPrefix = true)
+    public static function getOMClass(bool $withPrefix = true): string
     {
         return $withPrefix ? EpisodeTableMap::CLASS_DEFAULT : EpisodeTableMap::OM_CLASS;
     }
@@ -286,17 +297,17 @@ class EpisodeTableMap extends TableMap
     /**
      * Populates an object of the default type or an object that inherit from the default.
      *
-     * @param array  $row       row returned by DataFetcher->fetch().
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row Row returned by DataFetcher->fetch().
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
                                  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
-     * @throws PropelException Any exceptions caught during processing will be
+     * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Episode object, last column rank)
+     * @return array (Episode object, last column rank)
      */
-    public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
+    public static function populateObject(array $row, int $offset = 0, string $indexType = TableMap::TYPE_NUM): array
     {
         $key = EpisodeTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
         if (null !== ($obj = EpisodeTableMap::getInstanceFromPool($key))) {
@@ -312,7 +323,7 @@ class EpisodeTableMap extends TableMap
             EpisodeTableMap::addInstanceToPool($obj, $key);
         }
 
-        return array($obj, $col);
+        return [$obj, $col];
     }
 
     /**
@@ -320,13 +331,13 @@ class EpisodeTableMap extends TableMap
      * objects that inherit from the default.
      *
      * @param DataFetcherInterface $dataFetcher
-     * @return array
-     * @throws PropelException Any exceptions caught during processing will be
+     * @return array<object>
+     * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function populateObjects(DataFetcherInterface $dataFetcher)
+    public static function populateObjects(DataFetcherInterface $dataFetcher): array
     {
-        $results = array();
+        $results = [];
 
         // set the class once to avoid overhead in the loop
         $cls = static::getOMClass(false);
@@ -356,12 +367,13 @@ class EpisodeTableMap extends TableMap
      * XML schema will not be added to the select list and only loaded
      * on demand.
      *
-     * @param Criteria $criteria object containing the columns to add.
-     * @param string   $alias    optional table alias
-     * @throws PropelException Any exceptions caught during processing will be
+     * @param Criteria $criteria Object containing the columns to add.
+     * @param string|null $alias Optional table alias
+     * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     * @return void
      */
-    public static function addSelectColumns(Criteria $criteria, $alias = null)
+    public static function addSelectColumns(Criteria $criteria, ?string $alias = null): void
     {
         if (null === $alias) {
             $criteria->addSelectColumn(EpisodeTableMap::COL_ID);
@@ -386,12 +398,13 @@ class EpisodeTableMap extends TableMap
      * Note: any columns that were marked with lazyLoad="true" in the
      * XML schema will not be removed as they are only loaded on demand.
      *
-     * @param Criteria $criteria object containing the columns to remove.
-     * @param string   $alias    optional table alias
-     * @throws PropelException Any exceptions caught during processing will be
+     * @param Criteria $criteria Object containing the columns to remove.
+     * @param string|null $alias Optional table alias
+     * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     * @return void
      */
-    public static function removeSelectColumns(Criteria $criteria, $alias = null)
+    public static function removeSelectColumns(Criteria $criteria, ?string $alias = null): void
     {
         if (null === $alias) {
             $criteria->removeSelectColumn(EpisodeTableMap::COL_ID);
@@ -414,10 +427,10 @@ class EpisodeTableMap extends TableMap
      * Returns the TableMap related to this object.
      * This method is not needed for general use but a specific application could have a need.
      * @return TableMap
-     * @throws PropelException Any exceptions caught during processing will be
+     * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function getTableMap()
+    public static function getTableMap(): TableMap
     {
         return Propel::getServiceContainer()->getDatabaseMap(EpisodeTableMap::DATABASE_NAME)->getTable(EpisodeTableMap::TABLE_NAME);
     }
@@ -425,15 +438,15 @@ class EpisodeTableMap extends TableMap
     /**
      * Performs a DELETE on the database, given a Episode or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Episode object or primary key or array of primary keys
+     * @param mixed $values Criteria or Episode object or primary key or array of primary keys
      *              which is used to create the DELETE statement
-     * @param  ConnectionInterface $con the connection to use
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     * @param ConnectionInterface $con the connection to use
+     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
-     * @throws PropelException Any exceptions caught during processing will be
+     * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-     public static function doDelete($values, ConnectionInterface $con = null)
+     public static function doDelete($values, ?ConnectionInterface $con = null): int
      {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(EpisodeTableMap::DATABASE_NAME);
@@ -469,7 +482,7 @@ class EpisodeTableMap extends TableMap
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
-    public static function doDeleteAll(ConnectionInterface $con = null)
+    public static function doDeleteAll(?ConnectionInterface $con = null): int
     {
         return EpisodeQuery::create()->doDeleteAll($con);
     }
@@ -477,13 +490,13 @@ class EpisodeTableMap extends TableMap
     /**
      * Performs an INSERT on the database, given a Episode or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Episode object containing data that is used to create the INSERT statement.
+     * @param mixed $criteria Criteria or Episode object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
-     * @return mixed           The new primary key.
-     * @throws PropelException Any exceptions caught during processing will be
+     * @return mixed The new primary key.
+     * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function doInsert($criteria, ConnectionInterface $con = null)
+    public static function doInsert($criteria, ?ConnectionInterface $con = null)
     {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(EpisodeTableMap::DATABASE_NAME);
@@ -506,4 +519,4 @@ class EpisodeTableMap extends TableMap
         });
     }
 
-} // EpisodeTableMap
+}

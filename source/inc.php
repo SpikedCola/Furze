@@ -5,7 +5,7 @@ mb_internal_encoding('UTF-8');
 require_once(__DIR__.'/credentials.php');
 
 // autoload composer classes
-require_once(__DIR__.'/classes/vendor/autoload.php');
+require_once(__DIR__.'/vendor/autoload.php');
 
 // propel
 require_once(__DIR__.'/propel.php');

@@ -1,10 +1,19 @@
 <?php
 $serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
-$serviceContainer->initDatabaseMaps(array (
+$serviceContainer->initDatabaseMapFromDumps(array (
   'default' => 
   array (
-    0 => '\\Map\\EpisodeTableMap',
-    1 => '\\Map\\SongLinkTableMap',
-    2 => '\\Map\\SongTableMap',
+    'tablesByName' => 
+    array (
+      'episodes' => '\\Map\\EpisodeTableMap',
+      'song_links' => '\\Map\\SongLinkTableMap',
+      'songs' => '\\Map\\SongTableMap',
+    ),
+    'tablesByPhpName' => 
+    array (
+      '\\Episode' => '\\Map\\EpisodeTableMap',
+      '\\Song' => '\\Map\\SongTableMap',
+      '\\SongLink' => '\\Map\\SongLinkTableMap',
+    ),
   ),
 ));

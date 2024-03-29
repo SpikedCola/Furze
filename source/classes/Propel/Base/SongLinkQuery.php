@@ -11,14 +11,13 @@ use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
+use Propel\Runtime\Collection\Collection;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
 
 /**
- * Base class that represents a query for the 'song_links' table.
- *
- *
+ * Base class that represents a query for the `song_links` table.
  *
  * @method     ChildSongLinkQuery orderByTag($order = Criteria::ASC) Order by the tag column
  * @method     ChildSongLinkQuery orderBySongId($order = Criteria::ASC) Order by the song_id column
@@ -50,35 +49,36 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     \SongQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
- * @method     ChildSongLink|null findOne(ConnectionInterface $con = null) Return the first ChildSongLink matching the query
- * @method     ChildSongLink findOneOrCreate(ConnectionInterface $con = null) Return the first ChildSongLink matching the query, or a new ChildSongLink object populated from the query conditions when no match is found
+ * @method     ChildSongLink|null findOne(?ConnectionInterface $con = null) Return the first ChildSongLink matching the query
+ * @method     ChildSongLink findOneOrCreate(?ConnectionInterface $con = null) Return the first ChildSongLink matching the query, or a new ChildSongLink object populated from the query conditions when no match is found
  *
  * @method     ChildSongLink|null findOneByTag(int $tag) Return the first ChildSongLink filtered by the tag column
  * @method     ChildSongLink|null findOneBySongId(int $song_id) Return the first ChildSongLink filtered by the song_id column
  * @method     ChildSongLink|null findOneByUrl(string $url) Return the first ChildSongLink filtered by the url column
- * @method     ChildSongLink|null findOneByTitle(string $title) Return the first ChildSongLink filtered by the title column *
-
- * @method     ChildSongLink requirePk($key, ConnectionInterface $con = null) Return the ChildSongLink by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildSongLink requireOne(ConnectionInterface $con = null) Return the first ChildSongLink matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSongLink|null findOneByTitle(string $title) Return the first ChildSongLink filtered by the title column
+ *
+ * @method     ChildSongLink requirePk($key, ?ConnectionInterface $con = null) Return the ChildSongLink by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSongLink requireOne(?ConnectionInterface $con = null) Return the first ChildSongLink matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildSongLink requireOneByTag(int $tag) Return the first ChildSongLink filtered by the tag column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSongLink requireOneBySongId(int $song_id) Return the first ChildSongLink filtered by the song_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSongLink requireOneByUrl(string $url) Return the first ChildSongLink filtered by the url column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSongLink requireOneByTitle(string $title) Return the first ChildSongLink filtered by the title column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildSongLink[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildSongLink objects based on current ModelCriteria
- * @psalm-method ObjectCollection&\Traversable<ChildSongLink> find(ConnectionInterface $con = null) Return ChildSongLink objects based on current ModelCriteria
- * @method     ChildSongLink[]|ObjectCollection findByTag(int $tag) Return ChildSongLink objects filtered by the tag column
- * @psalm-method ObjectCollection&\Traversable<ChildSongLink> findByTag(int $tag) Return ChildSongLink objects filtered by the tag column
- * @method     ChildSongLink[]|ObjectCollection findBySongId(int $song_id) Return ChildSongLink objects filtered by the song_id column
- * @psalm-method ObjectCollection&\Traversable<ChildSongLink> findBySongId(int $song_id) Return ChildSongLink objects filtered by the song_id column
- * @method     ChildSongLink[]|ObjectCollection findByUrl(string $url) Return ChildSongLink objects filtered by the url column
- * @psalm-method ObjectCollection&\Traversable<ChildSongLink> findByUrl(string $url) Return ChildSongLink objects filtered by the url column
- * @method     ChildSongLink[]|ObjectCollection findByTitle(string $title) Return ChildSongLink objects filtered by the title column
- * @psalm-method ObjectCollection&\Traversable<ChildSongLink> findByTitle(string $title) Return ChildSongLink objects filtered by the title column
- * @method     ChildSongLink[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
- * @psalm-method \Propel\Runtime\Util\PropelModelPager&\Traversable<ChildSongLink> paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @method     ChildSongLink[]|Collection find(?ConnectionInterface $con = null) Return ChildSongLink objects based on current ModelCriteria
+ * @psalm-method Collection&\Traversable<ChildSongLink> find(?ConnectionInterface $con = null) Return ChildSongLink objects based on current ModelCriteria
  *
+ * @method     ChildSongLink[]|Collection findByTag(int|array<int> $tag) Return ChildSongLink objects filtered by the tag column
+ * @psalm-method Collection&\Traversable<ChildSongLink> findByTag(int|array<int> $tag) Return ChildSongLink objects filtered by the tag column
+ * @method     ChildSongLink[]|Collection findBySongId(int|array<int> $song_id) Return ChildSongLink objects filtered by the song_id column
+ * @psalm-method Collection&\Traversable<ChildSongLink> findBySongId(int|array<int> $song_id) Return ChildSongLink objects filtered by the song_id column
+ * @method     ChildSongLink[]|Collection findByUrl(string|array<string> $url) Return ChildSongLink objects filtered by the url column
+ * @psalm-method Collection&\Traversable<ChildSongLink> findByUrl(string|array<string> $url) Return ChildSongLink objects filtered by the url column
+ * @method     ChildSongLink[]|Collection findByTitle(string|array<string> $title) Return ChildSongLink objects filtered by the title column
+ * @psalm-method Collection&\Traversable<ChildSongLink> findByTitle(string|array<string> $title) Return ChildSongLink objects filtered by the title column
+ *
+ * @method     ChildSongLink[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @psalm-method \Propel\Runtime\Util\PropelModelPager&\Traversable<ChildSongLink> paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  */
 abstract class SongLinkQuery extends ModelCriteria
 {
@@ -87,9 +87,9 @@ abstract class SongLinkQuery extends ModelCriteria
     /**
      * Initializes internal state of \Base\SongLinkQuery object.
      *
-     * @param     string $dbName The database name
-     * @param     string $modelName The phpName of a model, e.g. 'Book'
-     * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
+     * @param string $dbName The database name
+     * @param string $modelName The phpName of a model, e.g. 'Book'
+     * @param string $modelAlias The alias for the model in this query, e.g. 'b'
      */
     public function __construct($dbName = 'default', $modelName = '\\SongLink', $modelAlias = null)
     {
@@ -99,12 +99,12 @@ abstract class SongLinkQuery extends ModelCriteria
     /**
      * Returns a new ChildSongLinkQuery object.
      *
-     * @param     string $modelAlias The alias of a model in the query
-     * @param     Criteria $criteria Optional Criteria to build the query from
+     * @param string $modelAlias The alias of a model in the query
+     * @param Criteria $criteria Optional Criteria to build the query from
      *
      * @return ChildSongLinkQuery
      */
-    public static function create($modelAlias = null, Criteria $criteria = null)
+    public static function create(?string $modelAlias = null, ?Criteria $criteria = null): Criteria
     {
         if ($criteria instanceof ChildSongLinkQuery) {
             return $criteria;
@@ -134,7 +134,7 @@ abstract class SongLinkQuery extends ModelCriteria
      *
      * @return ChildSongLink|array|mixed the result, formatted by the current formatter
      */
-    public function findPk($key, ConnectionInterface $con = null)
+    public function findPk($key, ?ConnectionInterface $con = null)
     {
         if ($key === null) {
             return null;
@@ -166,8 +166,8 @@ abstract class SongLinkQuery extends ModelCriteria
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -199,8 +199,8 @@ abstract class SongLinkQuery extends ModelCriteria
     /**
      * Find object by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @return ChildSongLink|array|mixed the result, formatted by the current formatter
      */
@@ -220,12 +220,12 @@ abstract class SongLinkQuery extends ModelCriteria
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
      * </code>
-     * @param     array $keys Primary keys to use for the query
-     * @param     ConnectionInterface $con an optional connection object
+     * @param array $keys Primary keys to use for the query
+     * @param ConnectionInterface $con an optional connection object
      *
-     * @return ObjectCollection|array|mixed the list of results, formatted by the current formatter
+     * @return Collection|array|mixed the list of results, formatted by the current formatter
      */
-    public function findPks($keys, ConnectionInterface $con = null)
+    public function findPks($keys, ?ConnectionInterface $con = null)
     {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
@@ -242,27 +242,31 @@ abstract class SongLinkQuery extends ModelCriteria
     /**
      * Filter the query by primary key
      *
-     * @param     mixed $key Primary key to use for the query
+     * @param mixed $key Primary key to use for the query
      *
-     * @return $this|ChildSongLinkQuery The current query, for fluid interface
+     * @return $this The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(SongLinkTableMap::COL_TAG, $key, Criteria::EQUAL);
+        $this->addUsingAlias(SongLinkTableMap::COL_TAG, $key, Criteria::EQUAL);
+
+        return $this;
     }
 
     /**
      * Filter the query by a list of primary keys
      *
-     * @param     array $keys The list of primary key to use for the query
+     * @param array|int $keys The list of primary key to use for the query
      *
-     * @return $this|ChildSongLinkQuery The current query, for fluid interface
+     * @return $this The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(SongLinkTableMap::COL_TAG, $keys, Criteria::IN);
+        $this->addUsingAlias(SongLinkTableMap::COL_TAG, $keys, Criteria::IN);
+
+        return $this;
     }
 
     /**
@@ -275,15 +279,15 @@ abstract class SongLinkQuery extends ModelCriteria
      * $query->filterByTag(array('min' => 12)); // WHERE tag > 12
      * </code>
      *
-     * @param     mixed $tag The value to use as filter.
+     * @param mixed $tag The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildSongLinkQuery The current query, for fluid interface
+     * @return $this The current query, for fluid interface
      */
-    public function filterByTag($tag = null, $comparison = null)
+    public function filterByTag($tag = null, ?string $comparison = null)
     {
         if (is_array($tag)) {
             $useMinMax = false;
@@ -303,7 +307,9 @@ abstract class SongLinkQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(SongLinkTableMap::COL_TAG, $tag, $comparison);
+        $this->addUsingAlias(SongLinkTableMap::COL_TAG, $tag, $comparison);
+
+        return $this;
     }
 
     /**
@@ -318,15 +324,15 @@ abstract class SongLinkQuery extends ModelCriteria
      *
      * @see       filterBySong()
      *
-     * @param     mixed $songId The value to use as filter.
+     * @param mixed $songId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildSongLinkQuery The current query, for fluid interface
+     * @return $this The current query, for fluid interface
      */
-    public function filterBySongId($songId = null, $comparison = null)
+    public function filterBySongId($songId = null, ?string $comparison = null)
     {
         if (is_array($songId)) {
             $useMinMax = false;
@@ -346,7 +352,9 @@ abstract class SongLinkQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(SongLinkTableMap::COL_SONG_ID, $songId, $comparison);
+        $this->addUsingAlias(SongLinkTableMap::COL_SONG_ID, $songId, $comparison);
+
+        return $this;
     }
 
     /**
@@ -356,14 +364,15 @@ abstract class SongLinkQuery extends ModelCriteria
      * <code>
      * $query->filterByUrl('fooValue');   // WHERE url = 'fooValue'
      * $query->filterByUrl('%fooValue%', Criteria::LIKE); // WHERE url LIKE '%fooValue%'
+     * $query->filterByUrl(['foo', 'bar']); // WHERE url IN ('foo', 'bar')
      * </code>
      *
-     * @param     string $url The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|string[] $url The value to use as filter.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildSongLinkQuery The current query, for fluid interface
+     * @return $this The current query, for fluid interface
      */
-    public function filterByUrl($url = null, $comparison = null)
+    public function filterByUrl($url = null, ?string $comparison = null)
     {
         if (null === $comparison) {
             if (is_array($url)) {
@@ -371,7 +380,9 @@ abstract class SongLinkQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(SongLinkTableMap::COL_URL, $url, $comparison);
+        $this->addUsingAlias(SongLinkTableMap::COL_URL, $url, $comparison);
+
+        return $this;
     }
 
     /**
@@ -381,14 +392,15 @@ abstract class SongLinkQuery extends ModelCriteria
      * <code>
      * $query->filterByTitle('fooValue');   // WHERE title = 'fooValue'
      * $query->filterByTitle('%fooValue%', Criteria::LIKE); // WHERE title LIKE '%fooValue%'
+     * $query->filterByTitle(['foo', 'bar']); // WHERE title IN ('foo', 'bar')
      * </code>
      *
-     * @param     string $title The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|string[] $title The value to use as filter.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildSongLinkQuery The current query, for fluid interface
+     * @return $this The current query, for fluid interface
      */
-    public function filterByTitle($title = null, $comparison = null)
+    public function filterByTitle($title = null, ?string $comparison = null)
     {
         if (null === $comparison) {
             if (is_array($title)) {
@@ -396,20 +408,22 @@ abstract class SongLinkQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(SongLinkTableMap::COL_TITLE, $title, $comparison);
+        $this->addUsingAlias(SongLinkTableMap::COL_TITLE, $title, $comparison);
+
+        return $this;
     }
 
     /**
      * Filter the query by a related \Song object
      *
      * @param \Song|ObjectCollection $song The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildSongLinkQuery The current query, for fluid interface
+     * @return $this The current query, for fluid interface
      */
-    public function filterBySong($song, $comparison = null)
+    public function filterBySong($song, ?string $comparison = null)
     {
         if ($song instanceof \Song) {
             return $this
@@ -419,8 +433,10 @@ abstract class SongLinkQuery extends ModelCriteria
                 $comparison = Criteria::IN;
             }
 
-            return $this
+            $this
                 ->addUsingAlias(SongLinkTableMap::COL_SONG_ID, $song->toKeyValue('PrimaryKey', 'Id'), $comparison);
+
+            return $this;
         } else {
             throw new PropelException('filterBySong() only accepts arguments of type \Song or Collection');
         }
@@ -429,12 +445,12 @@ abstract class SongLinkQuery extends ModelCriteria
     /**
      * Adds a JOIN clause to the query using the Song relation
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string|null $relationAlias Optional alias for the relation
+     * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildSongLinkQuery The current query, for fluid interface
+     * @return $this The current query, for fluid interface
      */
-    public function joinSong($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinSong(?string $relationAlias = null, ?string $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Song');
@@ -463,9 +479,9 @@ abstract class SongLinkQuery extends ModelCriteria
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
+     * @param string $relationAlias optional alias for the relation,
      *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \SongQuery A secondary query class using the current class as primary query
      */
@@ -501,20 +517,23 @@ abstract class SongLinkQuery extends ModelCriteria
 
         return $this;
     }
+
     /**
      * Use the relation to Song table for an EXISTS query.
      *
      * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
      *
-     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      * @param string|null $modelAlias sets an alias for the nested query
-     * @param string $typeOfExists Either ExistsCriterion::TYPE_EXISTS or ExistsCriterion::TYPE_NOT_EXISTS
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     * @param string $typeOfExists Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
      *
      * @return \SongQuery The inner query object of the EXISTS statement
      */
     public function useSongExistsQuery($modelAlias = null, $queryClass = null, $typeOfExists = 'EXISTS')
     {
-        return $this->useExistsQuery('Song', $modelAlias, $queryClass, $typeOfExists);
+        /** @var $q \SongQuery */
+        $q = $this->useExistsQuery('Song', $modelAlias, $queryClass, $typeOfExists);
+        return $q;
     }
 
     /**
@@ -529,14 +548,52 @@ abstract class SongLinkQuery extends ModelCriteria
      */
     public function useSongNotExistsQuery($modelAlias = null, $queryClass = null)
     {
-        return $this->useExistsQuery('Song', $modelAlias, $queryClass, 'NOT EXISTS');
+        /** @var $q \SongQuery */
+        $q = $this->useExistsQuery('Song', $modelAlias, $queryClass, 'NOT EXISTS');
+        return $q;
     }
+
+    /**
+     * Use the relation to Song table for an IN query.
+     *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
+     *
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
+     * @param string $typeOfIn Criteria::IN or Criteria::NOT_IN
+     *
+     * @return \SongQuery The inner query object of the IN statement
+     */
+    public function useInSongQuery($modelAlias = null, $queryClass = null, $typeOfIn = 'IN')
+    {
+        /** @var $q \SongQuery */
+        $q = $this->useInQuery('Song', $modelAlias, $queryClass, $typeOfIn);
+        return $q;
+    }
+
+    /**
+     * Use the relation to Song table for a NOT IN query.
+     *
+     * @see useSongInQuery()
+     *
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
+     *
+     * @return \SongQuery The inner query object of the NOT IN statement
+     */
+    public function useNotInSongQuery($modelAlias = null, $queryClass = null)
+    {
+        /** @var $q \SongQuery */
+        $q = $this->useInQuery('Song', $modelAlias, $queryClass, 'NOT IN');
+        return $q;
+    }
+
     /**
      * Exclude object from result
      *
-     * @param   ChildSongLink $songLink Object to remove from the list of results
+     * @param ChildSongLink $songLink Object to remove from the list of results
      *
-     * @return $this|ChildSongLinkQuery The current query, for fluid interface
+     * @return $this The current query, for fluid interface
      */
     public function prune($songLink = null)
     {
@@ -553,7 +610,7 @@ abstract class SongLinkQuery extends ModelCriteria
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
-    public function doDeleteAll(ConnectionInterface $con = null)
+    public function doDeleteAll(?ConnectionInterface $con = null): int
     {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(SongLinkTableMap::DATABASE_NAME);
@@ -578,12 +635,12 @@ abstract class SongLinkQuery extends ModelCriteria
      * Performs a DELETE on the database based on the current ModelCriteria
      *
      * @param ConnectionInterface $con the connection to use
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
-     * @throws PropelException Any exceptions caught during processing will be
+     * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public function delete(ConnectionInterface $con = null)
+    public function delete(?ConnectionInterface $con = null): int
     {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(SongLinkTableMap::DATABASE_NAME);
@@ -608,4 +665,4 @@ abstract class SongLinkQuery extends ModelCriteria
         });
     }
 
-} // SongLinkQuery
+}
