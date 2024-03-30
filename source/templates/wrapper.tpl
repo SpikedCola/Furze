@@ -1,4 +1,3 @@
-{* if production, use strip to remove whitespace *}
 <html>
 	<head>
 		<title>Colin Furze Music</title>
