@@ -78,6 +78,13 @@ $(document).on('click', '.clipboard', function(e) {
 	if (!currentRow) {
 		return;
 	}
+	if (insertTextIntoCurrentRow(text, currentRow)) {
+		// if the text was inserted, mark as such. dont delete in case we need for another track.
+		t.addClass('strikethrough'); 
+	}
+});
+
+function insertTextIntoCurrentRow(text, currentRow) {
 	// if we have a selected row:
 	var title = currentRow.find('.title');
 	var artist = currentRow.find('.artist');
@@ -89,22 +96,20 @@ $(document).on('click', '.clipboard', function(e) {
 		artist.focus({
 		    preventScroll: true
 		});
-		t.remove(); // hide clicked link on setting title.
-		return;
+		return true;
 	}
 	// else if artist is empty, copy there.
 	if (!artist.val()) {
 		artist.val(text);
-		t.remove(); // hide clicked link on setting artist.
-		return;
+		return true;
 	}
 	// else try to parse domain and copy to appropriate input (eg. facebook, youtube, etc.)
 	for (var i in linkPlaces) {
 		var target = linkPlaces[i];
 		if (text.includes(i)) {
 			currentRow.find('input.'+target).val(text);
-			t.remove(); // hide clicked link on successfully finding it.
-			return;
+			return true;
 		}
 	}
-});
+	return false;
+}

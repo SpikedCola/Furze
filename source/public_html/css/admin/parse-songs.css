@@ -10,3 +10,7 @@
 a.clipboard:visited {
 	color: #0000ff; /* make visited clipboard link look like normal link */
 }
+
+.strikethrough {
+	text-decoration: line-through;
+}
