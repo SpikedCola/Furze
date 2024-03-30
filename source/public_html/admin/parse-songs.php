@@ -3,9 +3,11 @@
 /**
  * Displays each unprocessed episode, one by one.
  * For helping me parse the music out and put it in a separate field.
+ * 
+ * @author Jordan Skoblenick <parkinglotlust@gmail.com> 2020-04-03
  */
 
-use Propel\Runtime\ActiveQuery\Criteria; 
+use Propel\Runtime\Map\TableMap;
 
 require_once(__DIR__.'/ui.php');
 
@@ -13,7 +15,7 @@ function stripAndAddHTTPS(string $url) {
 	return 'https://'.str_replace(['http://', 'https://'], '', $url);
 }
 
-// places we link to
+// places we link to.
 $linkPlaces = [
     'Bandcamp',
     'Facebook',
@@ -27,11 +29,12 @@ $linkPlaces = [
     'Label'
 ];
 
+// field on Song that can be set.
 $fields = [
-    'title' => 'setTitle',
-    'artist' => 'setArtist',
-    'notes' => 'setNotes',
-    'track' => 'setTrackNumber'
+    'title',
+    'artist',
+    'notes',
+    'track'
 ];
 
 if (!empty($_POST['id'])) {
@@ -40,13 +43,13 @@ if (!empty($_POST['id'])) {
 	foreach ($_POST['songs'] as $post) {
 		$song = new Song();
 		
-		foreach ($fields as $field => $func) {
-			$val = null;
-			if (isset($post[$field])) {
-				$val = trim($post[$field]);
+		foreach ($fields as $field) {
+			if (!isset($post[$field])) {
+				continue;
 			}
+			$val = trim($post[$field]);
 			if ($val) {
-				$song->$func($val);
+				$song->setByName($field, $val, TableMap::TYPE_FIELDNAME);
 			}
 		}
 
@@ -63,65 +66,35 @@ if (!empty($_POST['id'])) {
 			}
 		}
 		
+		// ignoring songs that dont have an artist set?
 		if ($song->getArtist()) {
 			$songs[] = $song;
 		}
 	}
-	$saveEpisode = EpisodeQuery::create()
-		->findOneById($id);
-	if (!$saveEpisode) {
-		throw new RuntimeException('cant find id '.$id);
+	$saveEpisode = EpisodeQuery::create()->requireOneById($id);
+	// note, we may have 0 songs for an episode.
+	foreach ($songs as $song) {
+		$saveEpisode->addSong($song);
 	}
-	$saveEpisode->setProcessed(2);
-	// its probably valid that we process an episode but it has no songs
-	if ($songs) {
-		foreach ($songs as $song) {
-			$saveEpisode->addSong($song);
-		}
-	}
-	$saveEpisode->save();
+	$saveEpisode
+		->setProcessed(true)
+		->save();
 	// redirect so we dont accidentally refresh and duplicate data
 	header('Location: /admin/parse-songs'); 
 	die;
 }
 
-if (!empty($_POST['id2'])) {
-	$id = $_POST['id'];
-	$saveEpisode = EpisodeQuery::create()
-		->findOneById($id);
-	if (!$saveEpisode) {
-		throw new RuntimeException('cant find id '.$id);
-	}
-	$saveEpisode->setProcessed(true);
-	$music = null;
-	if (!empty($_POST['music'])) {
-		$music = trim($_POST['music']);
-	}
-	$saveEpisode->setMusic($music);
-	die();
-	$saveEpisode->save();
-}
-// highlight all instances of search terms
-$desc = null;
-//if ($episode) {
-//	$desc = preg_replace('/(music|song|track)/i', '<mark>$1</mark>', $episode->getDescription());
-//}
-$template->assign('desc', $desc);
-// save above for later
-
 // get next ep to work on
 $episode = EpisodeQuery::create()
-	->filterByProcessed(0) // 2 = done this step
+	->filterByProcessed(false)
 	->findOne();
 
-// todo fix progress bar
 // stats for progress bar
 $todoEps = EpisodeQuery::create()
-	->filterByMusic(null, Criteria::NOT_EQUAL)
-	->filterByProcessed(1) 
+	->filterByProcessed(false) 
 	->count();
 $completeEps = EpisodeQuery::create()
-	->filterByProcessed(2) 
+	->filterByProcessed(true) 
 	->count();
 $template->assign('totalEps', $todoEps+$completeEps);
 $template->assign('completeEps', $completeEps);
