@@ -8,6 +8,7 @@ use \Song as ChildSong;
 use \SongLink as ChildSongLink;
 use \SongLinkQuery as ChildSongLinkQuery;
 use \SongQuery as ChildSongQuery;
+use \DateTime;
 use \Exception;
 use \PDO;
 use Map\SongLinkTableMap;
@@ -24,6 +25,7 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 /**
  * Base class that represents a row from the 'songs' table.
@@ -77,7 +79,7 @@ abstract class Song implements ActiveRecordInterface
 
     /**
      * The value for the episode_id field.
-     *
+     * _bin so column is case sensitive
      * @var        string
      */
     protected $episode_id;
@@ -110,6 +112,13 @@ abstract class Song implements ActiveRecordInterface
      * @var        string|null
      */
     protected $notes;
+
+    /**
+     * The value for the created_datetime field.
+     *
+     * @var        DateTime
+     */
+    protected $created_datetime;
 
     /**
      * @var        ChildEpisode
@@ -389,7 +398,7 @@ abstract class Song implements ActiveRecordInterface
 
     /**
      * Get the [episode_id] column value.
-     *
+     * _bin so column is case sensitive
      * @return string
      */
     public function getEpisodeId()
@@ -438,6 +447,28 @@ abstract class Song implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_datetime] column value.
+     *
+     *
+     * @param string|null $format The date/time format string (either date()-style or strftime()-style).
+     *   If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), and 0 if column value is 0000-00-00 00:00:00.
+     *
+     * @throws \Propel\Runtime\Exception\PropelException - if unable to parse/validate the date/time value.
+     *
+     * @psalm-return ($format is null ? DateTime : string)
+     */
+    public function getCreatedDatetime($format = null)
+    {
+        if ($format === null) {
+            return $this->created_datetime;
+        } else {
+            return $this->created_datetime instanceof \DateTimeInterface ? $this->created_datetime->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v New value
@@ -459,7 +490,7 @@ abstract class Song implements ActiveRecordInterface
 
     /**
      * Set the value of [episode_id] column.
-     *
+     * _bin so column is case sensitive
      * @param string $v New value
      * @return $this The current object (for fluent API support)
      */
@@ -562,6 +593,26 @@ abstract class Song implements ActiveRecordInterface
     }
 
     /**
+     * Sets the value of [created_datetime] column to a normalized version of the date/time value specified.
+     *
+     * @param string|integer|\DateTimeInterface $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this The current object (for fluent API support)
+     */
+    public function setCreatedDatetime($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->created_datetime !== null || $dt !== null) {
+            if ($this->created_datetime === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_datetime->format("Y-m-d H:i:s.u")) {
+                $this->created_datetime = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[SongTableMap::COL_CREATED_DATETIME] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    }
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -619,6 +670,12 @@ abstract class Song implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : SongTableMap::translateFieldName('Notes', TableMap::TYPE_PHPNAME, $indexType)];
             $this->notes = (null !== $col) ? (string) $col : null;
 
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : SongTableMap::translateFieldName('CreatedDatetime', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_datetime = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
             $this->resetModified();
             $this->setNew(false);
 
@@ -626,7 +683,7 @@ abstract class Song implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = SongTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = SongTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Song'), 0, $e);
@@ -881,6 +938,9 @@ abstract class Song implements ActiveRecordInterface
         if ($this->isColumnModified(SongTableMap::COL_NOTES)) {
             $modifiedColumns[':p' . $index++]  = 'notes';
         }
+        if ($this->isColumnModified(SongTableMap::COL_CREATED_DATETIME)) {
+            $modifiedColumns[':p' . $index++]  = 'created_datetime';
+        }
 
         $sql = sprintf(
             'INSERT INTO songs (%s) VALUES (%s)',
@@ -914,6 +974,10 @@ abstract class Song implements ActiveRecordInterface
                         break;
                     case 'notes':
                         $stmt->bindValue($identifier, $this->notes, PDO::PARAM_STR);
+
+                        break;
+                    case 'created_datetime':
+                        $stmt->bindValue($identifier, $this->created_datetime ? $this->created_datetime->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
 
                         break;
                 }
@@ -996,6 +1060,9 @@ abstract class Song implements ActiveRecordInterface
             case 5:
                 return $this->getNotes();
 
+            case 6:
+                return $this->getCreatedDatetime();
+
             default:
                 return null;
         } // switch()
@@ -1030,7 +1097,12 @@ abstract class Song implements ActiveRecordInterface
             $keys[3] => $this->getArtist(),
             $keys[4] => $this->getTrackNumber(),
             $keys[5] => $this->getNotes(),
+            $keys[6] => $this->getCreatedDatetime(),
         ];
+        if ($result[$keys[6]] instanceof \DateTimeInterface) {
+            $result[$keys[6]] = $result[$keys[6]]->format('Y-m-d H:i:s.u');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
@@ -1121,6 +1193,9 @@ abstract class Song implements ActiveRecordInterface
             case 5:
                 $this->setNotes($value);
                 break;
+            case 6:
+                $this->setCreatedDatetime($value);
+                break;
         } // switch()
 
         return $this;
@@ -1164,6 +1239,9 @@ abstract class Song implements ActiveRecordInterface
         }
         if (array_key_exists($keys[5], $arr)) {
             $this->setNotes($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setCreatedDatetime($arr[$keys[6]]);
         }
 
         return $this;
@@ -1225,6 +1303,9 @@ abstract class Song implements ActiveRecordInterface
         }
         if ($this->isColumnModified(SongTableMap::COL_NOTES)) {
             $criteria->add(SongTableMap::COL_NOTES, $this->notes);
+        }
+        if ($this->isColumnModified(SongTableMap::COL_CREATED_DATETIME)) {
+            $criteria->add(SongTableMap::COL_CREATED_DATETIME, $this->created_datetime);
         }
 
         return $criteria;
@@ -1319,6 +1400,7 @@ abstract class Song implements ActiveRecordInterface
         $copyObj->setArtist($this->getArtist());
         $copyObj->setTrackNumber($this->getTrackNumber());
         $copyObj->setNotes($this->getNotes());
+        $copyObj->setCreatedDatetime($this->getCreatedDatetime());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1686,6 +1768,7 @@ abstract class Song implements ActiveRecordInterface
         $this->artist = null;
         $this->track_number = null;
         $this->notes = null;
+        $this->created_datetime = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

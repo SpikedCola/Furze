@@ -63,7 +63,7 @@ class SongLinkTableMap extends TableMap
     /**
      * The total number of columns
      */
-    public const NUM_COLUMNS = 4;
+    public const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -73,7 +73,7 @@ class SongLinkTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    public const NUM_HYDRATE_COLUMNS = 4;
+    public const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the tag field
@@ -96,6 +96,11 @@ class SongLinkTableMap extends TableMap
     public const COL_TITLE = 'song_links.title';
 
     /**
+     * the column name for the created_datetime field
+     */
+    public const COL_CREATED_DATETIME = 'song_links.created_datetime';
+
+    /**
      * The default string format for model objects of the related table
      */
     public const DEFAULT_STRING_FORMAT = 'YAML';
@@ -109,11 +114,11 @@ class SongLinkTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldNames = [
-        self::TYPE_PHPNAME       => ['Tag', 'SongId', 'Url', 'Title', ],
-        self::TYPE_CAMELNAME     => ['tag', 'songId', 'url', 'title', ],
-        self::TYPE_COLNAME       => [SongLinkTableMap::COL_TAG, SongLinkTableMap::COL_SONG_ID, SongLinkTableMap::COL_URL, SongLinkTableMap::COL_TITLE, ],
-        self::TYPE_FIELDNAME     => ['tag', 'song_id', 'url', 'title', ],
-        self::TYPE_NUM           => [0, 1, 2, 3, ]
+        self::TYPE_PHPNAME       => ['Tag', 'SongId', 'Url', 'Title', 'CreatedDatetime', ],
+        self::TYPE_CAMELNAME     => ['tag', 'songId', 'url', 'title', 'createdDatetime', ],
+        self::TYPE_COLNAME       => [SongLinkTableMap::COL_TAG, SongLinkTableMap::COL_SONG_ID, SongLinkTableMap::COL_URL, SongLinkTableMap::COL_TITLE, SongLinkTableMap::COL_CREATED_DATETIME, ],
+        self::TYPE_FIELDNAME     => ['tag', 'song_id', 'url', 'title', 'created_datetime', ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, ]
     ];
 
     /**
@@ -125,11 +130,11 @@ class SongLinkTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldKeys = [
-        self::TYPE_PHPNAME       => ['Tag' => 0, 'SongId' => 1, 'Url' => 2, 'Title' => 3, ],
-        self::TYPE_CAMELNAME     => ['tag' => 0, 'songId' => 1, 'url' => 2, 'title' => 3, ],
-        self::TYPE_COLNAME       => [SongLinkTableMap::COL_TAG => 0, SongLinkTableMap::COL_SONG_ID => 1, SongLinkTableMap::COL_URL => 2, SongLinkTableMap::COL_TITLE => 3, ],
-        self::TYPE_FIELDNAME     => ['tag' => 0, 'song_id' => 1, 'url' => 2, 'title' => 3, ],
-        self::TYPE_NUM           => [0, 1, 2, 3, ]
+        self::TYPE_PHPNAME       => ['Tag' => 0, 'SongId' => 1, 'Url' => 2, 'Title' => 3, 'CreatedDatetime' => 4, ],
+        self::TYPE_CAMELNAME     => ['tag' => 0, 'songId' => 1, 'url' => 2, 'title' => 3, 'createdDatetime' => 4, ],
+        self::TYPE_COLNAME       => [SongLinkTableMap::COL_TAG => 0, SongLinkTableMap::COL_SONG_ID => 1, SongLinkTableMap::COL_URL => 2, SongLinkTableMap::COL_TITLE => 3, SongLinkTableMap::COL_CREATED_DATETIME => 4, ],
+        self::TYPE_FIELDNAME     => ['tag' => 0, 'song_id' => 1, 'url' => 2, 'title' => 3, 'created_datetime' => 4, ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, ]
     ];
 
     /**
@@ -167,6 +172,14 @@ class SongLinkTableMap extends TableMap
         'SongLinkTableMap::COL_TITLE' => 'TITLE',
         'COL_TITLE' => 'TITLE',
         'song_links.title' => 'TITLE',
+        'CreatedDatetime' => 'CREATED_DATETIME',
+        'SongLink.CreatedDatetime' => 'CREATED_DATETIME',
+        'createdDatetime' => 'CREATED_DATETIME',
+        'songLink.createdDatetime' => 'CREATED_DATETIME',
+        'SongLinkTableMap::COL_CREATED_DATETIME' => 'CREATED_DATETIME',
+        'COL_CREATED_DATETIME' => 'CREATED_DATETIME',
+        'created_datetime' => 'CREATED_DATETIME',
+        'song_links.created_datetime' => 'CREATED_DATETIME',
     ];
 
     /**
@@ -190,6 +203,7 @@ class SongLinkTableMap extends TableMap
         $this->addForeignKey('song_id', 'SongId', 'INTEGER', 'songs', 'id', true, null, null);
         $this->addColumn('url', 'Url', 'LONGVARCHAR', true, null, null);
         $this->addColumn('title', 'Title', 'LONGVARCHAR', true, null, null);
+        $this->addColumn('created_datetime', 'CreatedDatetime', 'DATETIME', true, null, null);
     }
 
     /**
@@ -354,11 +368,13 @@ class SongLinkTableMap extends TableMap
             $criteria->addSelectColumn(SongLinkTableMap::COL_SONG_ID);
             $criteria->addSelectColumn(SongLinkTableMap::COL_URL);
             $criteria->addSelectColumn(SongLinkTableMap::COL_TITLE);
+            $criteria->addSelectColumn(SongLinkTableMap::COL_CREATED_DATETIME);
         } else {
             $criteria->addSelectColumn($alias . '.tag');
             $criteria->addSelectColumn($alias . '.song_id');
             $criteria->addSelectColumn($alias . '.url');
             $criteria->addSelectColumn($alias . '.title');
+            $criteria->addSelectColumn($alias . '.created_datetime');
         }
     }
 
@@ -381,11 +397,13 @@ class SongLinkTableMap extends TableMap
             $criteria->removeSelectColumn(SongLinkTableMap::COL_SONG_ID);
             $criteria->removeSelectColumn(SongLinkTableMap::COL_URL);
             $criteria->removeSelectColumn(SongLinkTableMap::COL_TITLE);
+            $criteria->removeSelectColumn(SongLinkTableMap::COL_CREATED_DATETIME);
         } else {
             $criteria->removeSelectColumn($alias . '.tag');
             $criteria->removeSelectColumn($alias . '.song_id');
             $criteria->removeSelectColumn($alias . '.url');
             $criteria->removeSelectColumn($alias . '.title');
+            $criteria->removeSelectColumn($alias . '.created_datetime');
         }
     }
 

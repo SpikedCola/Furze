@@ -12,7 +12,6 @@ use Base\Song as BaseSong;
  * long as it does not already exist in the output directory.
  *
  */
-class Song extends BaseSong
-{
-
+class Song extends BaseSong {
+	use \setCreatedDatetime, \getCreatedDatetimeLocal;
 }

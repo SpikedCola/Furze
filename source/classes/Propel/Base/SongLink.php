@@ -5,6 +5,7 @@ namespace Base;
 use \Song as ChildSong;
 use \SongLinkQuery as ChildSongLinkQuery;
 use \SongQuery as ChildSongQuery;
+use \DateTime;
 use \Exception;
 use \PDO;
 use Map\SongLinkTableMap;
@@ -19,6 +20,7 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 /**
  * Base class that represents a row from the 'song_links' table.
@@ -90,6 +92,13 @@ abstract class SongLink implements ActiveRecordInterface
      * @var        string
      */
     protected $title;
+
+    /**
+     * The value for the created_datetime field.
+     *
+     * @var        DateTime
+     */
+    protected $created_datetime;
 
     /**
      * @var        ChildSong
@@ -371,6 +380,28 @@ abstract class SongLink implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_datetime] column value.
+     *
+     *
+     * @param string|null $format The date/time format string (either date()-style or strftime()-style).
+     *   If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), and 0 if column value is 0000-00-00 00:00:00.
+     *
+     * @throws \Propel\Runtime\Exception\PropelException - if unable to parse/validate the date/time value.
+     *
+     * @psalm-return ($format is null ? DateTime : string)
+     */
+    public function getCreatedDatetime($format = null)
+    {
+        if ($format === null) {
+            return $this->created_datetime;
+        } else {
+            return $this->created_datetime instanceof \DateTimeInterface ? $this->created_datetime->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [tag] column.
      *
      * @param int $v New value
@@ -455,6 +486,26 @@ abstract class SongLink implements ActiveRecordInterface
     }
 
     /**
+     * Sets the value of [created_datetime] column to a normalized version of the date/time value specified.
+     *
+     * @param string|integer|\DateTimeInterface $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this The current object (for fluent API support)
+     */
+    public function setCreatedDatetime($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->created_datetime !== null || $dt !== null) {
+            if ($this->created_datetime === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_datetime->format("Y-m-d H:i:s.u")) {
+                $this->created_datetime = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[SongLinkTableMap::COL_CREATED_DATETIME] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    }
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -502,6 +553,12 @@ abstract class SongLink implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : SongLinkTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
             $this->title = (null !== $col) ? (string) $col : null;
 
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : SongLinkTableMap::translateFieldName('CreatedDatetime', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_datetime = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
             $this->resetModified();
             $this->setNew(false);
 
@@ -509,7 +566,7 @@ abstract class SongLink implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 4; // 4 = SongLinkTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = SongLinkTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\SongLink'), 0, $e);
@@ -739,6 +796,9 @@ abstract class SongLink implements ActiveRecordInterface
         if ($this->isColumnModified(SongLinkTableMap::COL_TITLE)) {
             $modifiedColumns[':p' . $index++]  = 'title';
         }
+        if ($this->isColumnModified(SongLinkTableMap::COL_CREATED_DATETIME)) {
+            $modifiedColumns[':p' . $index++]  = 'created_datetime';
+        }
 
         $sql = sprintf(
             'INSERT INTO song_links (%s) VALUES (%s)',
@@ -764,6 +824,10 @@ abstract class SongLink implements ActiveRecordInterface
                         break;
                     case 'title':
                         $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
+
+                        break;
+                    case 'created_datetime':
+                        $stmt->bindValue($identifier, $this->created_datetime ? $this->created_datetime->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
 
                         break;
                 }
@@ -840,6 +904,9 @@ abstract class SongLink implements ActiveRecordInterface
             case 3:
                 return $this->getTitle();
 
+            case 4:
+                return $this->getCreatedDatetime();
+
             default:
                 return null;
         } // switch()
@@ -872,7 +939,12 @@ abstract class SongLink implements ActiveRecordInterface
             $keys[1] => $this->getSongId(),
             $keys[2] => $this->getUrl(),
             $keys[3] => $this->getTitle(),
+            $keys[4] => $this->getCreatedDatetime(),
         ];
+        if ($result[$keys[4]] instanceof \DateTimeInterface) {
+            $result[$keys[4]] = $result[$keys[4]]->format('Y-m-d H:i:s.u');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
@@ -942,6 +1014,9 @@ abstract class SongLink implements ActiveRecordInterface
             case 3:
                 $this->setTitle($value);
                 break;
+            case 4:
+                $this->setCreatedDatetime($value);
+                break;
         } // switch()
 
         return $this;
@@ -979,6 +1054,9 @@ abstract class SongLink implements ActiveRecordInterface
         }
         if (array_key_exists($keys[3], $arr)) {
             $this->setTitle($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setCreatedDatetime($arr[$keys[4]]);
         }
 
         return $this;
@@ -1034,6 +1112,9 @@ abstract class SongLink implements ActiveRecordInterface
         }
         if ($this->isColumnModified(SongLinkTableMap::COL_TITLE)) {
             $criteria->add(SongLinkTableMap::COL_TITLE, $this->title);
+        }
+        if ($this->isColumnModified(SongLinkTableMap::COL_CREATED_DATETIME)) {
+            $criteria->add(SongLinkTableMap::COL_CREATED_DATETIME, $this->created_datetime);
         }
 
         return $criteria;
@@ -1126,6 +1207,7 @@ abstract class SongLink implements ActiveRecordInterface
         $copyObj->setSongId($this->getSongId());
         $copyObj->setUrl($this->getUrl());
         $copyObj->setTitle($this->getTitle());
+        $copyObj->setCreatedDatetime($this->getCreatedDatetime());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setTag(NULL); // this is a auto-increment column, so set to default value
@@ -1221,6 +1303,7 @@ abstract class SongLink implements ActiveRecordInterface
         $this->song_id = null;
         $this->url = null;
         $this->title = null;
+        $this->created_datetime = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();

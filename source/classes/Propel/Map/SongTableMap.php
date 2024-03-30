@@ -63,7 +63,7 @@ class SongTableMap extends TableMap
     /**
      * The total number of columns
      */
-    public const NUM_COLUMNS = 6;
+    public const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -73,7 +73,7 @@ class SongTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    public const NUM_HYDRATE_COLUMNS = 6;
+    public const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the id field
@@ -106,6 +106,11 @@ class SongTableMap extends TableMap
     public const COL_NOTES = 'songs.notes';
 
     /**
+     * the column name for the created_datetime field
+     */
+    public const COL_CREATED_DATETIME = 'songs.created_datetime';
+
+    /**
      * The default string format for model objects of the related table
      */
     public const DEFAULT_STRING_FORMAT = 'YAML';
@@ -119,11 +124,11 @@ class SongTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldNames = [
-        self::TYPE_PHPNAME       => ['Id', 'EpisodeId', 'Title', 'Artist', 'TrackNumber', 'Notes', ],
-        self::TYPE_CAMELNAME     => ['id', 'episodeId', 'title', 'artist', 'trackNumber', 'notes', ],
-        self::TYPE_COLNAME       => [SongTableMap::COL_ID, SongTableMap::COL_EPISODE_ID, SongTableMap::COL_TITLE, SongTableMap::COL_ARTIST, SongTableMap::COL_TRACK_NUMBER, SongTableMap::COL_NOTES, ],
-        self::TYPE_FIELDNAME     => ['id', 'episode_id', 'title', 'artist', 'track_number', 'notes', ],
-        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, ]
+        self::TYPE_PHPNAME       => ['Id', 'EpisodeId', 'Title', 'Artist', 'TrackNumber', 'Notes', 'CreatedDatetime', ],
+        self::TYPE_CAMELNAME     => ['id', 'episodeId', 'title', 'artist', 'trackNumber', 'notes', 'createdDatetime', ],
+        self::TYPE_COLNAME       => [SongTableMap::COL_ID, SongTableMap::COL_EPISODE_ID, SongTableMap::COL_TITLE, SongTableMap::COL_ARTIST, SongTableMap::COL_TRACK_NUMBER, SongTableMap::COL_NOTES, SongTableMap::COL_CREATED_DATETIME, ],
+        self::TYPE_FIELDNAME     => ['id', 'episode_id', 'title', 'artist', 'track_number', 'notes', 'created_datetime', ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, ]
     ];
 
     /**
@@ -135,11 +140,11 @@ class SongTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldKeys = [
-        self::TYPE_PHPNAME       => ['Id' => 0, 'EpisodeId' => 1, 'Title' => 2, 'Artist' => 3, 'TrackNumber' => 4, 'Notes' => 5, ],
-        self::TYPE_CAMELNAME     => ['id' => 0, 'episodeId' => 1, 'title' => 2, 'artist' => 3, 'trackNumber' => 4, 'notes' => 5, ],
-        self::TYPE_COLNAME       => [SongTableMap::COL_ID => 0, SongTableMap::COL_EPISODE_ID => 1, SongTableMap::COL_TITLE => 2, SongTableMap::COL_ARTIST => 3, SongTableMap::COL_TRACK_NUMBER => 4, SongTableMap::COL_NOTES => 5, ],
-        self::TYPE_FIELDNAME     => ['id' => 0, 'episode_id' => 1, 'title' => 2, 'artist' => 3, 'track_number' => 4, 'notes' => 5, ],
-        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, ]
+        self::TYPE_PHPNAME       => ['Id' => 0, 'EpisodeId' => 1, 'Title' => 2, 'Artist' => 3, 'TrackNumber' => 4, 'Notes' => 5, 'CreatedDatetime' => 6, ],
+        self::TYPE_CAMELNAME     => ['id' => 0, 'episodeId' => 1, 'title' => 2, 'artist' => 3, 'trackNumber' => 4, 'notes' => 5, 'createdDatetime' => 6, ],
+        self::TYPE_COLNAME       => [SongTableMap::COL_ID => 0, SongTableMap::COL_EPISODE_ID => 1, SongTableMap::COL_TITLE => 2, SongTableMap::COL_ARTIST => 3, SongTableMap::COL_TRACK_NUMBER => 4, SongTableMap::COL_NOTES => 5, SongTableMap::COL_CREATED_DATETIME => 6, ],
+        self::TYPE_FIELDNAME     => ['id' => 0, 'episode_id' => 1, 'title' => 2, 'artist' => 3, 'track_number' => 4, 'notes' => 5, 'created_datetime' => 6, ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, ]
     ];
 
     /**
@@ -192,6 +197,14 @@ class SongTableMap extends TableMap
         'SongTableMap::COL_NOTES' => 'NOTES',
         'COL_NOTES' => 'NOTES',
         'songs.notes' => 'NOTES',
+        'CreatedDatetime' => 'CREATED_DATETIME',
+        'Song.CreatedDatetime' => 'CREATED_DATETIME',
+        'createdDatetime' => 'CREATED_DATETIME',
+        'song.createdDatetime' => 'CREATED_DATETIME',
+        'SongTableMap::COL_CREATED_DATETIME' => 'CREATED_DATETIME',
+        'COL_CREATED_DATETIME' => 'CREATED_DATETIME',
+        'created_datetime' => 'CREATED_DATETIME',
+        'songs.created_datetime' => 'CREATED_DATETIME',
     ];
 
     /**
@@ -217,6 +230,7 @@ class SongTableMap extends TableMap
         $this->addColumn('artist', 'Artist', 'LONGVARCHAR', true, null, null);
         $this->addColumn('track_number', 'TrackNumber', 'INTEGER', false, null, 1);
         $this->addColumn('notes', 'Notes', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('created_datetime', 'CreatedDatetime', 'DATETIME', true, null, null);
     }
 
     /**
@@ -390,6 +404,7 @@ class SongTableMap extends TableMap
             $criteria->addSelectColumn(SongTableMap::COL_ARTIST);
             $criteria->addSelectColumn(SongTableMap::COL_TRACK_NUMBER);
             $criteria->addSelectColumn(SongTableMap::COL_NOTES);
+            $criteria->addSelectColumn(SongTableMap::COL_CREATED_DATETIME);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.episode_id');
@@ -397,6 +412,7 @@ class SongTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.artist');
             $criteria->addSelectColumn($alias . '.track_number');
             $criteria->addSelectColumn($alias . '.notes');
+            $criteria->addSelectColumn($alias . '.created_datetime');
         }
     }
 
@@ -421,6 +437,7 @@ class SongTableMap extends TableMap
             $criteria->removeSelectColumn(SongTableMap::COL_ARTIST);
             $criteria->removeSelectColumn(SongTableMap::COL_TRACK_NUMBER);
             $criteria->removeSelectColumn(SongTableMap::COL_NOTES);
+            $criteria->removeSelectColumn(SongTableMap::COL_CREATED_DATETIME);
         } else {
             $criteria->removeSelectColumn($alias . '.id');
             $criteria->removeSelectColumn($alias . '.episode_id');
@@ -428,6 +445,7 @@ class SongTableMap extends TableMap
             $criteria->removeSelectColumn($alias . '.artist');
             $criteria->removeSelectColumn($alias . '.track_number');
             $criteria->removeSelectColumn($alias . '.notes');
+            $criteria->removeSelectColumn($alias . '.created_datetime');
         }
     }
 

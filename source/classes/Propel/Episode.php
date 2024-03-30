@@ -13,20 +13,18 @@ use Base\Episode as BaseEpisode;
  *
  */
 class Episode extends BaseEpisode {
-	public static function CreateFromJSON(object $json) {
-		$ep = new Episode();
-		$ep->setId($json->id);
-		$ep->setUploadDate($json->upload_date);
-		$ep->setTitle($json->title);
-		$ep->setDescription($json->description);
-		return $ep;
-	}
-	public static function CreateFromArray(string $videoId, array $data) {
-		$ep = new Episode();
-		$ep->setId($videoId);
-		$ep->setUploadDate($data['upload_date']);
-		$ep->setTitle($data['title']);
-		$ep->setDescription($data['description']);
-		return $ep;
+	use \setCreatedDatetime, \getCreatedDatetimeLocal, \getProcessedDatetimeLocal;
+	
+	/**
+	 * Set processed_datetime on setting processed = 1.
+	 * 
+	 * @param mixed $v
+	 * @return self
+	 */
+	public function setProcessed($v) : self {
+		if ($v && ($this->getProcessed() !== $v)) {
+			$this->setProcessedDatetime(Util::NowUTC());
+		}
+		return parent::setProcessed($v);
 	}
 }

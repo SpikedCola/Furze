@@ -63,7 +63,7 @@ class EpisodeTableMap extends TableMap
     /**
      * The total number of columns
      */
-    public const NUM_COLUMNS = 6;
+    public const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -73,17 +73,12 @@ class EpisodeTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    public const NUM_HYDRATE_COLUMNS = 6;
+    public const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the id field
      */
     public const COL_ID = 'episodes.id';
-
-    /**
-     * the column name for the upload_date field
-     */
-    public const COL_UPLOAD_DATE = 'episodes.upload_date';
 
     /**
      * the column name for the title field
@@ -96,14 +91,24 @@ class EpisodeTableMap extends TableMap
     public const COL_DESCRIPTION = 'episodes.description';
 
     /**
+     * the column name for the uploaded_datetime field
+     */
+    public const COL_UPLOADED_DATETIME = 'episodes.uploaded_datetime';
+
+    /**
      * the column name for the processed field
      */
     public const COL_PROCESSED = 'episodes.processed';
 
     /**
-     * the column name for the music field
+     * the column name for the created_datetime field
      */
-    public const COL_MUSIC = 'episodes.music';
+    public const COL_CREATED_DATETIME = 'episodes.created_datetime';
+
+    /**
+     * the column name for the processed_datetime field
+     */
+    public const COL_PROCESSED_DATETIME = 'episodes.processed_datetime';
 
     /**
      * The default string format for model objects of the related table
@@ -119,11 +124,11 @@ class EpisodeTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldNames = [
-        self::TYPE_PHPNAME       => ['Id', 'UploadDate', 'Title', 'Description', 'Processed', 'Music', ],
-        self::TYPE_CAMELNAME     => ['id', 'uploadDate', 'title', 'description', 'processed', 'music', ],
-        self::TYPE_COLNAME       => [EpisodeTableMap::COL_ID, EpisodeTableMap::COL_UPLOAD_DATE, EpisodeTableMap::COL_TITLE, EpisodeTableMap::COL_DESCRIPTION, EpisodeTableMap::COL_PROCESSED, EpisodeTableMap::COL_MUSIC, ],
-        self::TYPE_FIELDNAME     => ['id', 'upload_date', 'title', 'description', 'processed', 'music', ],
-        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, ]
+        self::TYPE_PHPNAME       => ['Id', 'Title', 'Description', 'UploadedDatetime', 'Processed', 'CreatedDatetime', 'ProcessedDatetime', ],
+        self::TYPE_CAMELNAME     => ['id', 'title', 'description', 'uploadedDatetime', 'processed', 'createdDatetime', 'processedDatetime', ],
+        self::TYPE_COLNAME       => [EpisodeTableMap::COL_ID, EpisodeTableMap::COL_TITLE, EpisodeTableMap::COL_DESCRIPTION, EpisodeTableMap::COL_UPLOADED_DATETIME, EpisodeTableMap::COL_PROCESSED, EpisodeTableMap::COL_CREATED_DATETIME, EpisodeTableMap::COL_PROCESSED_DATETIME, ],
+        self::TYPE_FIELDNAME     => ['id', 'title', 'description', 'uploaded_datetime', 'processed', 'created_datetime', 'processed_datetime', ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, ]
     ];
 
     /**
@@ -135,11 +140,11 @@ class EpisodeTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldKeys = [
-        self::TYPE_PHPNAME       => ['Id' => 0, 'UploadDate' => 1, 'Title' => 2, 'Description' => 3, 'Processed' => 4, 'Music' => 5, ],
-        self::TYPE_CAMELNAME     => ['id' => 0, 'uploadDate' => 1, 'title' => 2, 'description' => 3, 'processed' => 4, 'music' => 5, ],
-        self::TYPE_COLNAME       => [EpisodeTableMap::COL_ID => 0, EpisodeTableMap::COL_UPLOAD_DATE => 1, EpisodeTableMap::COL_TITLE => 2, EpisodeTableMap::COL_DESCRIPTION => 3, EpisodeTableMap::COL_PROCESSED => 4, EpisodeTableMap::COL_MUSIC => 5, ],
-        self::TYPE_FIELDNAME     => ['id' => 0, 'upload_date' => 1, 'title' => 2, 'description' => 3, 'processed' => 4, 'music' => 5, ],
-        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, ]
+        self::TYPE_PHPNAME       => ['Id' => 0, 'Title' => 1, 'Description' => 2, 'UploadedDatetime' => 3, 'Processed' => 4, 'CreatedDatetime' => 5, 'ProcessedDatetime' => 6, ],
+        self::TYPE_CAMELNAME     => ['id' => 0, 'title' => 1, 'description' => 2, 'uploadedDatetime' => 3, 'processed' => 4, 'createdDatetime' => 5, 'processedDatetime' => 6, ],
+        self::TYPE_COLNAME       => [EpisodeTableMap::COL_ID => 0, EpisodeTableMap::COL_TITLE => 1, EpisodeTableMap::COL_DESCRIPTION => 2, EpisodeTableMap::COL_UPLOADED_DATETIME => 3, EpisodeTableMap::COL_PROCESSED => 4, EpisodeTableMap::COL_CREATED_DATETIME => 5, EpisodeTableMap::COL_PROCESSED_DATETIME => 6, ],
+        self::TYPE_FIELDNAME     => ['id' => 0, 'title' => 1, 'description' => 2, 'uploaded_datetime' => 3, 'processed' => 4, 'created_datetime' => 5, 'processed_datetime' => 6, ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, ]
     ];
 
     /**
@@ -155,14 +160,6 @@ class EpisodeTableMap extends TableMap
         'EpisodeTableMap::COL_ID' => 'ID',
         'COL_ID' => 'ID',
         'episodes.id' => 'ID',
-        'UploadDate' => 'UPLOAD_DATE',
-        'Episode.UploadDate' => 'UPLOAD_DATE',
-        'uploadDate' => 'UPLOAD_DATE',
-        'episode.uploadDate' => 'UPLOAD_DATE',
-        'EpisodeTableMap::COL_UPLOAD_DATE' => 'UPLOAD_DATE',
-        'COL_UPLOAD_DATE' => 'UPLOAD_DATE',
-        'upload_date' => 'UPLOAD_DATE',
-        'episodes.upload_date' => 'UPLOAD_DATE',
         'Title' => 'TITLE',
         'Episode.Title' => 'TITLE',
         'title' => 'TITLE',
@@ -177,6 +174,14 @@ class EpisodeTableMap extends TableMap
         'EpisodeTableMap::COL_DESCRIPTION' => 'DESCRIPTION',
         'COL_DESCRIPTION' => 'DESCRIPTION',
         'episodes.description' => 'DESCRIPTION',
+        'UploadedDatetime' => 'UPLOADED_DATETIME',
+        'Episode.UploadedDatetime' => 'UPLOADED_DATETIME',
+        'uploadedDatetime' => 'UPLOADED_DATETIME',
+        'episode.uploadedDatetime' => 'UPLOADED_DATETIME',
+        'EpisodeTableMap::COL_UPLOADED_DATETIME' => 'UPLOADED_DATETIME',
+        'COL_UPLOADED_DATETIME' => 'UPLOADED_DATETIME',
+        'uploaded_datetime' => 'UPLOADED_DATETIME',
+        'episodes.uploaded_datetime' => 'UPLOADED_DATETIME',
         'Processed' => 'PROCESSED',
         'Episode.Processed' => 'PROCESSED',
         'processed' => 'PROCESSED',
@@ -184,13 +189,22 @@ class EpisodeTableMap extends TableMap
         'EpisodeTableMap::COL_PROCESSED' => 'PROCESSED',
         'COL_PROCESSED' => 'PROCESSED',
         'episodes.processed' => 'PROCESSED',
-        'Music' => 'MUSIC',
-        'Episode.Music' => 'MUSIC',
-        'music' => 'MUSIC',
-        'episode.music' => 'MUSIC',
-        'EpisodeTableMap::COL_MUSIC' => 'MUSIC',
-        'COL_MUSIC' => 'MUSIC',
-        'episodes.music' => 'MUSIC',
+        'CreatedDatetime' => 'CREATED_DATETIME',
+        'Episode.CreatedDatetime' => 'CREATED_DATETIME',
+        'createdDatetime' => 'CREATED_DATETIME',
+        'episode.createdDatetime' => 'CREATED_DATETIME',
+        'EpisodeTableMap::COL_CREATED_DATETIME' => 'CREATED_DATETIME',
+        'COL_CREATED_DATETIME' => 'CREATED_DATETIME',
+        'created_datetime' => 'CREATED_DATETIME',
+        'episodes.created_datetime' => 'CREATED_DATETIME',
+        'ProcessedDatetime' => 'PROCESSED_DATETIME',
+        'Episode.ProcessedDatetime' => 'PROCESSED_DATETIME',
+        'processedDatetime' => 'PROCESSED_DATETIME',
+        'episode.processedDatetime' => 'PROCESSED_DATETIME',
+        'EpisodeTableMap::COL_PROCESSED_DATETIME' => 'PROCESSED_DATETIME',
+        'COL_PROCESSED_DATETIME' => 'PROCESSED_DATETIME',
+        'processed_datetime' => 'PROCESSED_DATETIME',
+        'episodes.processed_datetime' => 'PROCESSED_DATETIME',
     ];
 
     /**
@@ -211,11 +225,12 @@ class EpisodeTableMap extends TableMap
         $this->setUseIdGenerator(false);
         // columns
         $this->addPrimaryKey('id', 'Id', 'VARCHAR', true, 255, null);
-        $this->addColumn('upload_date', 'UploadDate', 'DATE', true, null, null);
         $this->addColumn('title', 'Title', 'LONGVARCHAR', true, null, null);
         $this->addColumn('description', 'Description', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('processed', 'Processed', 'INTEGER', true, null, 0);
-        $this->addColumn('music', 'Music', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('uploaded_datetime', 'UploadedDatetime', 'DATETIME', true, null, null);
+        $this->addColumn('processed', 'Processed', 'BOOLEAN', true, 1, false);
+        $this->addColumn('created_datetime', 'CreatedDatetime', 'DATETIME', true, null, null);
+        $this->addColumn('processed_datetime', 'ProcessedDatetime', 'DATETIME', false, null, null);
     }
 
     /**
@@ -377,18 +392,20 @@ class EpisodeTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(EpisodeTableMap::COL_ID);
-            $criteria->addSelectColumn(EpisodeTableMap::COL_UPLOAD_DATE);
             $criteria->addSelectColumn(EpisodeTableMap::COL_TITLE);
             $criteria->addSelectColumn(EpisodeTableMap::COL_DESCRIPTION);
+            $criteria->addSelectColumn(EpisodeTableMap::COL_UPLOADED_DATETIME);
             $criteria->addSelectColumn(EpisodeTableMap::COL_PROCESSED);
-            $criteria->addSelectColumn(EpisodeTableMap::COL_MUSIC);
+            $criteria->addSelectColumn(EpisodeTableMap::COL_CREATED_DATETIME);
+            $criteria->addSelectColumn(EpisodeTableMap::COL_PROCESSED_DATETIME);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.upload_date');
             $criteria->addSelectColumn($alias . '.title');
             $criteria->addSelectColumn($alias . '.description');
+            $criteria->addSelectColumn($alias . '.uploaded_datetime');
             $criteria->addSelectColumn($alias . '.processed');
-            $criteria->addSelectColumn($alias . '.music');
+            $criteria->addSelectColumn($alias . '.created_datetime');
+            $criteria->addSelectColumn($alias . '.processed_datetime');
         }
     }
 
@@ -408,18 +425,20 @@ class EpisodeTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->removeSelectColumn(EpisodeTableMap::COL_ID);
-            $criteria->removeSelectColumn(EpisodeTableMap::COL_UPLOAD_DATE);
             $criteria->removeSelectColumn(EpisodeTableMap::COL_TITLE);
             $criteria->removeSelectColumn(EpisodeTableMap::COL_DESCRIPTION);
+            $criteria->removeSelectColumn(EpisodeTableMap::COL_UPLOADED_DATETIME);
             $criteria->removeSelectColumn(EpisodeTableMap::COL_PROCESSED);
-            $criteria->removeSelectColumn(EpisodeTableMap::COL_MUSIC);
+            $criteria->removeSelectColumn(EpisodeTableMap::COL_CREATED_DATETIME);
+            $criteria->removeSelectColumn(EpisodeTableMap::COL_PROCESSED_DATETIME);
         } else {
             $criteria->removeSelectColumn($alias . '.id');
-            $criteria->removeSelectColumn($alias . '.upload_date');
             $criteria->removeSelectColumn($alias . '.title');
             $criteria->removeSelectColumn($alias . '.description');
+            $criteria->removeSelectColumn($alias . '.uploaded_datetime');
             $criteria->removeSelectColumn($alias . '.processed');
-            $criteria->removeSelectColumn($alias . '.music');
+            $criteria->removeSelectColumn($alias . '.created_datetime');
+            $criteria->removeSelectColumn($alias . '.processed_datetime');
         }
     }
 

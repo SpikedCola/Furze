@@ -23,11 +23,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSongLinkQuery orderBySongId($order = Criteria::ASC) Order by the song_id column
  * @method     ChildSongLinkQuery orderByUrl($order = Criteria::ASC) Order by the url column
  * @method     ChildSongLinkQuery orderByTitle($order = Criteria::ASC) Order by the title column
+ * @method     ChildSongLinkQuery orderByCreatedDatetime($order = Criteria::ASC) Order by the created_datetime column
  *
  * @method     ChildSongLinkQuery groupByTag() Group by the tag column
  * @method     ChildSongLinkQuery groupBySongId() Group by the song_id column
  * @method     ChildSongLinkQuery groupByUrl() Group by the url column
  * @method     ChildSongLinkQuery groupByTitle() Group by the title column
+ * @method     ChildSongLinkQuery groupByCreatedDatetime() Group by the created_datetime column
  *
  * @method     ChildSongLinkQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildSongLinkQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -56,6 +58,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSongLink|null findOneBySongId(int $song_id) Return the first ChildSongLink filtered by the song_id column
  * @method     ChildSongLink|null findOneByUrl(string $url) Return the first ChildSongLink filtered by the url column
  * @method     ChildSongLink|null findOneByTitle(string $title) Return the first ChildSongLink filtered by the title column
+ * @method     ChildSongLink|null findOneByCreatedDatetime(string $created_datetime) Return the first ChildSongLink filtered by the created_datetime column
  *
  * @method     ChildSongLink requirePk($key, ?ConnectionInterface $con = null) Return the ChildSongLink by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSongLink requireOne(?ConnectionInterface $con = null) Return the first ChildSongLink matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -64,6 +67,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSongLink requireOneBySongId(int $song_id) Return the first ChildSongLink filtered by the song_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSongLink requireOneByUrl(string $url) Return the first ChildSongLink filtered by the url column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSongLink requireOneByTitle(string $title) Return the first ChildSongLink filtered by the title column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSongLink requireOneByCreatedDatetime(string $created_datetime) Return the first ChildSongLink filtered by the created_datetime column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildSongLink[]|Collection find(?ConnectionInterface $con = null) Return ChildSongLink objects based on current ModelCriteria
  * @psalm-method Collection&\Traversable<ChildSongLink> find(?ConnectionInterface $con = null) Return ChildSongLink objects based on current ModelCriteria
@@ -76,6 +80,8 @@ use Propel\Runtime\Exception\PropelException;
  * @psalm-method Collection&\Traversable<ChildSongLink> findByUrl(string|array<string> $url) Return ChildSongLink objects filtered by the url column
  * @method     ChildSongLink[]|Collection findByTitle(string|array<string> $title) Return ChildSongLink objects filtered by the title column
  * @psalm-method Collection&\Traversable<ChildSongLink> findByTitle(string|array<string> $title) Return ChildSongLink objects filtered by the title column
+ * @method     ChildSongLink[]|Collection findByCreatedDatetime(string|array<string> $created_datetime) Return ChildSongLink objects filtered by the created_datetime column
+ * @psalm-method Collection&\Traversable<ChildSongLink> findByCreatedDatetime(string|array<string> $created_datetime) Return ChildSongLink objects filtered by the created_datetime column
  *
  * @method     ChildSongLink[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  * @psalm-method \Propel\Runtime\Util\PropelModelPager&\Traversable<ChildSongLink> paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -175,7 +181,7 @@ abstract class SongLinkQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT tag, song_id, url, title FROM song_links WHERE tag = :p0';
+        $sql = 'SELECT tag, song_id, url, title, created_datetime FROM song_links WHERE tag = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -409,6 +415,51 @@ abstract class SongLinkQuery extends ModelCriteria
         }
 
         $this->addUsingAlias(SongLinkTableMap::COL_TITLE, $title, $comparison);
+
+        return $this;
+    }
+
+    /**
+     * Filter the query on the created_datetime column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedDatetime('2011-03-14'); // WHERE created_datetime = '2011-03-14'
+     * $query->filterByCreatedDatetime('now'); // WHERE created_datetime = '2011-03-14'
+     * $query->filterByCreatedDatetime(array('max' => 'yesterday')); // WHERE created_datetime > '2011-03-13'
+     * </code>
+     *
+     * @param mixed $createdDatetime The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this The current query, for fluid interface
+     */
+    public function filterByCreatedDatetime($createdDatetime = null, ?string $comparison = null)
+    {
+        if (is_array($createdDatetime)) {
+            $useMinMax = false;
+            if (isset($createdDatetime['min'])) {
+                $this->addUsingAlias(SongLinkTableMap::COL_CREATED_DATETIME, $createdDatetime['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdDatetime['max'])) {
+                $this->addUsingAlias(SongLinkTableMap::COL_CREATED_DATETIME, $createdDatetime['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        $this->addUsingAlias(SongLinkTableMap::COL_CREATED_DATETIME, $createdDatetime, $comparison);
 
         return $this;
     }

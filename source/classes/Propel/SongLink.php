@@ -12,7 +12,6 @@ use Base\SongLink as BaseSongLink;
  * long as it does not already exist in the output directory.
  *
  */
-class SongLink extends BaseSongLink
-{
-
+class SongLink extends BaseSongLink {
+	use \setCreatedDatetime, \getCreatedDatetimeLocal;
 }

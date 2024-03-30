@@ -1,7 +1,7 @@
 <?php
 
 // to install, symlink to composer's vendor/bin/ dir:
-//   ln -s /var/www/furze/database/propel.php /var/www/furze/source/vendor/bin/propel.php
+//   ln -s /var/www/colinfurzemusic/database/propel.php /var/www/colinfurzemusic/source/vendor/bin/propel.php
 // or, on windows:
 //   mklink "c:/wamp/www/furze/source/vendor/bin/propel.php" "c:/wamp/www/furze/database/propel.php"
 //   mklink "c:/www/furze/source/vendor/bin/propel.php" "c:/www/furze/database/propel.php"

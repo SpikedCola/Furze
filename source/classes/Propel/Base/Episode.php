@@ -70,17 +70,10 @@ abstract class Episode implements ActiveRecordInterface
 
     /**
      * The value for the id field.
-     *
+     * _bin so column is case sensitive
      * @var        string
      */
     protected $id;
-
-    /**
-     * The value for the upload_date field.
-     *
-     * @var        DateTime
-     */
-    protected $upload_date;
 
     /**
      * The value for the title field.
@@ -97,19 +90,33 @@ abstract class Episode implements ActiveRecordInterface
     protected $description;
 
     /**
+     * The value for the uploaded_datetime field.
+     *
+     * @var        DateTime
+     */
+    protected $uploaded_datetime;
+
+    /**
      * The value for the processed field.
      *
-     * Note: this column has a database default value of: 0
-     * @var        int
+     * Note: this column has a database default value of: false
+     * @var        boolean
      */
     protected $processed;
 
     /**
-     * The value for the music field.
+     * The value for the created_datetime field.
      *
-     * @var        string|null
+     * @var        DateTime
      */
-    protected $music;
+    protected $created_datetime;
+
+    /**
+     * The value for the processed_datetime field.
+     *
+     * @var        DateTime|null
+     */
+    protected $processed_datetime;
 
     /**
      * @var        ObjectCollection|ChildSong[] Collection to store aggregation of ChildSong objects.
@@ -141,7 +148,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function applyDefaultValues(): void
     {
-        $this->processed = 0;
+        $this->processed = false;
     }
 
     /**
@@ -374,34 +381,12 @@ abstract class Episode implements ActiveRecordInterface
 
     /**
      * Get the [id] column value.
-     *
+     * _bin so column is case sensitive
      * @return string
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get the [optionally formatted] temporal [upload_date] column value.
-     *
-     *
-     * @param string|null $format The date/time format string (either date()-style or strftime()-style).
-     *   If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), and 0 if column value is 0000-00-00.
-     *
-     * @throws \Propel\Runtime\Exception\PropelException - if unable to parse/validate the date/time value.
-     *
-     * @psalm-return ($format is null ? DateTime : string)
-     */
-    public function getUploadDate($format = null)
-    {
-        if ($format === null) {
-            return $this->upload_date;
-        } else {
-            return $this->upload_date instanceof \DateTimeInterface ? $this->upload_date->format($format) : null;
-        }
     }
 
     /**
@@ -425,9 +410,31 @@ abstract class Episode implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [uploaded_datetime] column value.
+     *
+     *
+     * @param string|null $format The date/time format string (either date()-style or strftime()-style).
+     *   If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), and 0 if column value is 0000-00-00 00:00:00.
+     *
+     * @throws \Propel\Runtime\Exception\PropelException - if unable to parse/validate the date/time value.
+     *
+     * @psalm-return ($format is null ? DateTime : string)
+     */
+    public function getUploadedDatetime($format = null)
+    {
+        if ($format === null) {
+            return $this->uploaded_datetime;
+        } else {
+            return $this->uploaded_datetime instanceof \DateTimeInterface ? $this->uploaded_datetime->format($format) : null;
+        }
+    }
+
+    /**
      * Get the [processed] column value.
      *
-     * @return int
+     * @return boolean
      */
     public function getProcessed()
     {
@@ -435,18 +442,62 @@ abstract class Episode implements ActiveRecordInterface
     }
 
     /**
-     * Get the [music] column value.
+     * Get the [processed] column value.
      *
-     * @return string|null
+     * @return boolean
      */
-    public function getMusic()
+    public function isProcessed()
     {
-        return $this->music;
+        return $this->getProcessed();
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [created_datetime] column value.
+     *
+     *
+     * @param string|null $format The date/time format string (either date()-style or strftime()-style).
+     *   If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), and 0 if column value is 0000-00-00 00:00:00.
+     *
+     * @throws \Propel\Runtime\Exception\PropelException - if unable to parse/validate the date/time value.
+     *
+     * @psalm-return ($format is null ? DateTime : string)
+     */
+    public function getCreatedDatetime($format = null)
+    {
+        if ($format === null) {
+            return $this->created_datetime;
+        } else {
+            return $this->created_datetime instanceof \DateTimeInterface ? $this->created_datetime->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [processed_datetime] column value.
+     *
+     *
+     * @param string|null $format The date/time format string (either date()-style or strftime()-style).
+     *   If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime|null Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00.
+     *
+     * @throws \Propel\Runtime\Exception\PropelException - if unable to parse/validate the date/time value.
+     *
+     * @psalm-return ($format is null ? DateTime|null : string|null)
+     */
+    public function getProcessedDatetime($format = null)
+    {
+        if ($format === null) {
+            return $this->processed_datetime;
+        } else {
+            return $this->processed_datetime instanceof \DateTimeInterface ? $this->processed_datetime->format($format) : null;
+        }
     }
 
     /**
      * Set the value of [id] column.
-     *
+     * _bin so column is case sensitive
      * @param string $v New value
      * @return $this The current object (for fluent API support)
      */
@@ -460,26 +511,6 @@ abstract class Episode implements ActiveRecordInterface
             $this->id = $v;
             $this->modifiedColumns[EpisodeTableMap::COL_ID] = true;
         }
-
-        return $this;
-    }
-
-    /**
-     * Sets the value of [upload_date] column to a normalized version of the date/time value specified.
-     *
-     * @param string|integer|\DateTimeInterface $v string, integer (timestamp), or \DateTimeInterface value.
-     *               Empty strings are treated as NULL.
-     * @return $this The current object (for fluent API support)
-     */
-    public function setUploadDate($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->upload_date !== null || $dt !== null) {
-            if ($this->upload_date === null || $dt === null || $dt->format("Y-m-d") !== $this->upload_date->format("Y-m-d")) {
-                $this->upload_date = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[EpisodeTableMap::COL_UPLOAD_DATE] = true;
-            }
-        } // if either are not null
 
         return $this;
     }
@@ -525,15 +556,43 @@ abstract class Episode implements ActiveRecordInterface
     }
 
     /**
-     * Set the value of [processed] column.
+     * Sets the value of [uploaded_datetime] column to a normalized version of the date/time value specified.
      *
-     * @param int $v New value
+     * @param string|integer|\DateTimeInterface $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this The current object (for fluent API support)
+     */
+    public function setUploadedDatetime($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->uploaded_datetime !== null || $dt !== null) {
+            if ($this->uploaded_datetime === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->uploaded_datetime->format("Y-m-d H:i:s.u")) {
+                $this->uploaded_datetime = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[EpisodeTableMap::COL_UPLOADED_DATETIME] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    }
+
+    /**
+     * Sets the value of the [processed] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param bool|integer|string $v The new value
      * @return $this The current object (for fluent API support)
      */
     public function setProcessed($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
         }
 
         if ($this->processed !== $v) {
@@ -545,21 +604,41 @@ abstract class Episode implements ActiveRecordInterface
     }
 
     /**
-     * Set the value of [music] column.
+     * Sets the value of [created_datetime] column to a normalized version of the date/time value specified.
      *
-     * @param string|null $v New value
+     * @param string|integer|\DateTimeInterface $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
      * @return $this The current object (for fluent API support)
      */
-    public function setMusic($v)
+    public function setCreatedDatetime($v)
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->created_datetime !== null || $dt !== null) {
+            if ($this->created_datetime === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_datetime->format("Y-m-d H:i:s.u")) {
+                $this->created_datetime = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[EpisodeTableMap::COL_CREATED_DATETIME] = true;
+            }
+        } // if either are not null
 
-        if ($this->music !== $v) {
-            $this->music = $v;
-            $this->modifiedColumns[EpisodeTableMap::COL_MUSIC] = true;
-        }
+        return $this;
+    }
+
+    /**
+     * Sets the value of [processed_datetime] column to a normalized version of the date/time value specified.
+     *
+     * @param string|integer|\DateTimeInterface|null $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this The current object (for fluent API support)
+     */
+    public function setProcessedDatetime($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->processed_datetime !== null || $dt !== null) {
+            if ($this->processed_datetime === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->processed_datetime->format("Y-m-d H:i:s.u")) {
+                $this->processed_datetime = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[EpisodeTableMap::COL_PROCESSED_DATETIME] = true;
+            }
+        } // if either are not null
 
         return $this;
     }
@@ -574,7 +653,7 @@ abstract class Episode implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues(): bool
     {
-            if ($this->processed !== 0) {
+            if ($this->processed !== false) {
                 return false;
             }
 
@@ -607,23 +686,32 @@ abstract class Episode implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : EpisodeTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : EpisodeTableMap::translateFieldName('UploadDate', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00') {
-                $col = null;
-            }
-            $this->upload_date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EpisodeTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : EpisodeTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
             $this->title = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EpisodeTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EpisodeTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EpisodeTableMap::translateFieldName('Processed', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->processed = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EpisodeTableMap::translateFieldName('UploadedDatetime', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->uploaded_datetime = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EpisodeTableMap::translateFieldName('Music', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->music = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EpisodeTableMap::translateFieldName('Processed', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->processed = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EpisodeTableMap::translateFieldName('CreatedDatetime', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_datetime = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : EpisodeTableMap::translateFieldName('ProcessedDatetime', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->processed_datetime = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
             $this->resetModified();
             $this->setNew(false);
@@ -632,7 +720,7 @@ abstract class Episode implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = EpisodeTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = EpisodeTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Episode'), 0, $e);
@@ -852,20 +940,23 @@ abstract class Episode implements ActiveRecordInterface
         if ($this->isColumnModified(EpisodeTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(EpisodeTableMap::COL_UPLOAD_DATE)) {
-            $modifiedColumns[':p' . $index++]  = 'upload_date';
-        }
         if ($this->isColumnModified(EpisodeTableMap::COL_TITLE)) {
             $modifiedColumns[':p' . $index++]  = 'title';
         }
         if ($this->isColumnModified(EpisodeTableMap::COL_DESCRIPTION)) {
             $modifiedColumns[':p' . $index++]  = 'description';
         }
+        if ($this->isColumnModified(EpisodeTableMap::COL_UPLOADED_DATETIME)) {
+            $modifiedColumns[':p' . $index++]  = 'uploaded_datetime';
+        }
         if ($this->isColumnModified(EpisodeTableMap::COL_PROCESSED)) {
             $modifiedColumns[':p' . $index++]  = 'processed';
         }
-        if ($this->isColumnModified(EpisodeTableMap::COL_MUSIC)) {
-            $modifiedColumns[':p' . $index++]  = 'music';
+        if ($this->isColumnModified(EpisodeTableMap::COL_CREATED_DATETIME)) {
+            $modifiedColumns[':p' . $index++]  = 'created_datetime';
+        }
+        if ($this->isColumnModified(EpisodeTableMap::COL_PROCESSED_DATETIME)) {
+            $modifiedColumns[':p' . $index++]  = 'processed_datetime';
         }
 
         $sql = sprintf(
@@ -882,10 +973,6 @@ abstract class Episode implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_STR);
 
                         break;
-                    case 'upload_date':
-                        $stmt->bindValue($identifier, $this->upload_date ? $this->upload_date->format("Y-m-d") : null, PDO::PARAM_STR);
-
-                        break;
                     case 'title':
                         $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
 
@@ -894,12 +981,20 @@ abstract class Episode implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
 
                         break;
-                    case 'processed':
-                        $stmt->bindValue($identifier, $this->processed, PDO::PARAM_INT);
+                    case 'uploaded_datetime':
+                        $stmt->bindValue($identifier, $this->uploaded_datetime ? $this->uploaded_datetime->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
 
                         break;
-                    case 'music':
-                        $stmt->bindValue($identifier, $this->music, PDO::PARAM_STR);
+                    case 'processed':
+                        $stmt->bindValue($identifier, (int) $this->processed, PDO::PARAM_INT);
+
+                        break;
+                    case 'created_datetime':
+                        $stmt->bindValue($identifier, $this->created_datetime ? $this->created_datetime->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+
+                        break;
+                    case 'processed_datetime':
+                        $stmt->bindValue($identifier, $this->processed_datetime ? $this->processed_datetime->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
 
                         break;
                 }
@@ -961,19 +1056,22 @@ abstract class Episode implements ActiveRecordInterface
                 return $this->getId();
 
             case 1:
-                return $this->getUploadDate();
-
-            case 2:
                 return $this->getTitle();
 
-            case 3:
+            case 2:
                 return $this->getDescription();
+
+            case 3:
+                return $this->getUploadedDatetime();
 
             case 4:
                 return $this->getProcessed();
 
             case 5:
-                return $this->getMusic();
+                return $this->getCreatedDatetime();
+
+            case 6:
+                return $this->getProcessedDatetime();
 
             default:
                 return null;
@@ -1004,14 +1102,23 @@ abstract class Episode implements ActiveRecordInterface
         $keys = EpisodeTableMap::getFieldNames($keyType);
         $result = [
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getUploadDate(),
-            $keys[2] => $this->getTitle(),
-            $keys[3] => $this->getDescription(),
+            $keys[1] => $this->getTitle(),
+            $keys[2] => $this->getDescription(),
+            $keys[3] => $this->getUploadedDatetime(),
             $keys[4] => $this->getProcessed(),
-            $keys[5] => $this->getMusic(),
+            $keys[5] => $this->getCreatedDatetime(),
+            $keys[6] => $this->getProcessedDatetime(),
         ];
-        if ($result[$keys[1]] instanceof \DateTimeInterface) {
-            $result[$keys[1]] = $result[$keys[1]]->format('Y-m-d');
+        if ($result[$keys[3]] instanceof \DateTimeInterface) {
+            $result[$keys[3]] = $result[$keys[3]]->format('Y-m-d H:i:s.u');
+        }
+
+        if ($result[$keys[5]] instanceof \DateTimeInterface) {
+            $result[$keys[5]] = $result[$keys[5]]->format('Y-m-d H:i:s.u');
+        }
+
+        if ($result[$keys[6]] instanceof \DateTimeInterface) {
+            $result[$keys[6]] = $result[$keys[6]]->format('Y-m-d H:i:s.u');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1075,19 +1182,22 @@ abstract class Episode implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setUploadDate($value);
-                break;
-            case 2:
                 $this->setTitle($value);
                 break;
-            case 3:
+            case 2:
                 $this->setDescription($value);
+                break;
+            case 3:
+                $this->setUploadedDatetime($value);
                 break;
             case 4:
                 $this->setProcessed($value);
                 break;
             case 5:
-                $this->setMusic($value);
+                $this->setCreatedDatetime($value);
+                break;
+            case 6:
+                $this->setProcessedDatetime($value);
                 break;
         } // switch()
 
@@ -1119,19 +1229,22 @@ abstract class Episode implements ActiveRecordInterface
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setUploadDate($arr[$keys[1]]);
+            $this->setTitle($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setTitle($arr[$keys[2]]);
+            $this->setDescription($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setDescription($arr[$keys[3]]);
+            $this->setUploadedDatetime($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
             $this->setProcessed($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setMusic($arr[$keys[5]]);
+            $this->setCreatedDatetime($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setProcessedDatetime($arr[$keys[6]]);
         }
 
         return $this;
@@ -1179,20 +1292,23 @@ abstract class Episode implements ActiveRecordInterface
         if ($this->isColumnModified(EpisodeTableMap::COL_ID)) {
             $criteria->add(EpisodeTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(EpisodeTableMap::COL_UPLOAD_DATE)) {
-            $criteria->add(EpisodeTableMap::COL_UPLOAD_DATE, $this->upload_date);
-        }
         if ($this->isColumnModified(EpisodeTableMap::COL_TITLE)) {
             $criteria->add(EpisodeTableMap::COL_TITLE, $this->title);
         }
         if ($this->isColumnModified(EpisodeTableMap::COL_DESCRIPTION)) {
             $criteria->add(EpisodeTableMap::COL_DESCRIPTION, $this->description);
         }
+        if ($this->isColumnModified(EpisodeTableMap::COL_UPLOADED_DATETIME)) {
+            $criteria->add(EpisodeTableMap::COL_UPLOADED_DATETIME, $this->uploaded_datetime);
+        }
         if ($this->isColumnModified(EpisodeTableMap::COL_PROCESSED)) {
             $criteria->add(EpisodeTableMap::COL_PROCESSED, $this->processed);
         }
-        if ($this->isColumnModified(EpisodeTableMap::COL_MUSIC)) {
-            $criteria->add(EpisodeTableMap::COL_MUSIC, $this->music);
+        if ($this->isColumnModified(EpisodeTableMap::COL_CREATED_DATETIME)) {
+            $criteria->add(EpisodeTableMap::COL_CREATED_DATETIME, $this->created_datetime);
+        }
+        if ($this->isColumnModified(EpisodeTableMap::COL_PROCESSED_DATETIME)) {
+            $criteria->add(EpisodeTableMap::COL_PROCESSED_DATETIME, $this->processed_datetime);
         }
 
         return $criteria;
@@ -1283,11 +1399,12 @@ abstract class Episode implements ActiveRecordInterface
     public function copyInto(object $copyObj, bool $deepCopy = false, bool $makeNew = true): void
     {
         $copyObj->setId($this->getId());
-        $copyObj->setUploadDate($this->getUploadDate());
         $copyObj->setTitle($this->getTitle());
         $copyObj->setDescription($this->getDescription());
+        $copyObj->setUploadedDatetime($this->getUploadedDatetime());
         $copyObj->setProcessed($this->getProcessed());
-        $copyObj->setMusic($this->getMusic());
+        $copyObj->setCreatedDatetime($this->getCreatedDatetime());
+        $copyObj->setProcessedDatetime($this->getProcessedDatetime());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1595,11 +1712,12 @@ abstract class Episode implements ActiveRecordInterface
     public function clear()
     {
         $this->id = null;
-        $this->upload_date = null;
         $this->title = null;
         $this->description = null;
+        $this->uploaded_datetime = null;
         $this->processed = null;
-        $this->music = null;
+        $this->created_datetime = null;
+        $this->processed_datetime = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

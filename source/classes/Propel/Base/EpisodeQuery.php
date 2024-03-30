@@ -20,18 +20,20 @@ use Propel\Runtime\Exception\PropelException;
  * Base class that represents a query for the `episodes` table.
  *
  * @method     ChildEpisodeQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildEpisodeQuery orderByUploadDate($order = Criteria::ASC) Order by the upload_date column
  * @method     ChildEpisodeQuery orderByTitle($order = Criteria::ASC) Order by the title column
  * @method     ChildEpisodeQuery orderByDescription($order = Criteria::ASC) Order by the description column
+ * @method     ChildEpisodeQuery orderByUploadedDatetime($order = Criteria::ASC) Order by the uploaded_datetime column
  * @method     ChildEpisodeQuery orderByProcessed($order = Criteria::ASC) Order by the processed column
- * @method     ChildEpisodeQuery orderByMusic($order = Criteria::ASC) Order by the music column
+ * @method     ChildEpisodeQuery orderByCreatedDatetime($order = Criteria::ASC) Order by the created_datetime column
+ * @method     ChildEpisodeQuery orderByProcessedDatetime($order = Criteria::ASC) Order by the processed_datetime column
  *
  * @method     ChildEpisodeQuery groupById() Group by the id column
- * @method     ChildEpisodeQuery groupByUploadDate() Group by the upload_date column
  * @method     ChildEpisodeQuery groupByTitle() Group by the title column
  * @method     ChildEpisodeQuery groupByDescription() Group by the description column
+ * @method     ChildEpisodeQuery groupByUploadedDatetime() Group by the uploaded_datetime column
  * @method     ChildEpisodeQuery groupByProcessed() Group by the processed column
- * @method     ChildEpisodeQuery groupByMusic() Group by the music column
+ * @method     ChildEpisodeQuery groupByCreatedDatetime() Group by the created_datetime column
+ * @method     ChildEpisodeQuery groupByProcessedDatetime() Group by the processed_datetime column
  *
  * @method     ChildEpisodeQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildEpisodeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -57,37 +59,41 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEpisode findOneOrCreate(?ConnectionInterface $con = null) Return the first ChildEpisode matching the query, or a new ChildEpisode object populated from the query conditions when no match is found
  *
  * @method     ChildEpisode|null findOneById(string $id) Return the first ChildEpisode filtered by the id column
- * @method     ChildEpisode|null findOneByUploadDate(string $upload_date) Return the first ChildEpisode filtered by the upload_date column
  * @method     ChildEpisode|null findOneByTitle(string $title) Return the first ChildEpisode filtered by the title column
  * @method     ChildEpisode|null findOneByDescription(string $description) Return the first ChildEpisode filtered by the description column
- * @method     ChildEpisode|null findOneByProcessed(int $processed) Return the first ChildEpisode filtered by the processed column
- * @method     ChildEpisode|null findOneByMusic(string $music) Return the first ChildEpisode filtered by the music column
+ * @method     ChildEpisode|null findOneByUploadedDatetime(string $uploaded_datetime) Return the first ChildEpisode filtered by the uploaded_datetime column
+ * @method     ChildEpisode|null findOneByProcessed(boolean $processed) Return the first ChildEpisode filtered by the processed column
+ * @method     ChildEpisode|null findOneByCreatedDatetime(string $created_datetime) Return the first ChildEpisode filtered by the created_datetime column
+ * @method     ChildEpisode|null findOneByProcessedDatetime(string $processed_datetime) Return the first ChildEpisode filtered by the processed_datetime column
  *
  * @method     ChildEpisode requirePk($key, ?ConnectionInterface $con = null) Return the ChildEpisode by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEpisode requireOne(?ConnectionInterface $con = null) Return the first ChildEpisode matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildEpisode requireOneById(string $id) Return the first ChildEpisode filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildEpisode requireOneByUploadDate(string $upload_date) Return the first ChildEpisode filtered by the upload_date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEpisode requireOneByTitle(string $title) Return the first ChildEpisode filtered by the title column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEpisode requireOneByDescription(string $description) Return the first ChildEpisode filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildEpisode requireOneByProcessed(int $processed) Return the first ChildEpisode filtered by the processed column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildEpisode requireOneByMusic(string $music) Return the first ChildEpisode filtered by the music column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildEpisode requireOneByUploadedDatetime(string $uploaded_datetime) Return the first ChildEpisode filtered by the uploaded_datetime column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildEpisode requireOneByProcessed(boolean $processed) Return the first ChildEpisode filtered by the processed column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildEpisode requireOneByCreatedDatetime(string $created_datetime) Return the first ChildEpisode filtered by the created_datetime column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildEpisode requireOneByProcessedDatetime(string $processed_datetime) Return the first ChildEpisode filtered by the processed_datetime column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildEpisode[]|Collection find(?ConnectionInterface $con = null) Return ChildEpisode objects based on current ModelCriteria
  * @psalm-method Collection&\Traversable<ChildEpisode> find(?ConnectionInterface $con = null) Return ChildEpisode objects based on current ModelCriteria
  *
  * @method     ChildEpisode[]|Collection findById(string|array<string> $id) Return ChildEpisode objects filtered by the id column
  * @psalm-method Collection&\Traversable<ChildEpisode> findById(string|array<string> $id) Return ChildEpisode objects filtered by the id column
- * @method     ChildEpisode[]|Collection findByUploadDate(string|array<string> $upload_date) Return ChildEpisode objects filtered by the upload_date column
- * @psalm-method Collection&\Traversable<ChildEpisode> findByUploadDate(string|array<string> $upload_date) Return ChildEpisode objects filtered by the upload_date column
  * @method     ChildEpisode[]|Collection findByTitle(string|array<string> $title) Return ChildEpisode objects filtered by the title column
  * @psalm-method Collection&\Traversable<ChildEpisode> findByTitle(string|array<string> $title) Return ChildEpisode objects filtered by the title column
  * @method     ChildEpisode[]|Collection findByDescription(string|array<string> $description) Return ChildEpisode objects filtered by the description column
  * @psalm-method Collection&\Traversable<ChildEpisode> findByDescription(string|array<string> $description) Return ChildEpisode objects filtered by the description column
- * @method     ChildEpisode[]|Collection findByProcessed(int|array<int> $processed) Return ChildEpisode objects filtered by the processed column
- * @psalm-method Collection&\Traversable<ChildEpisode> findByProcessed(int|array<int> $processed) Return ChildEpisode objects filtered by the processed column
- * @method     ChildEpisode[]|Collection findByMusic(string|array<string> $music) Return ChildEpisode objects filtered by the music column
- * @psalm-method Collection&\Traversable<ChildEpisode> findByMusic(string|array<string> $music) Return ChildEpisode objects filtered by the music column
+ * @method     ChildEpisode[]|Collection findByUploadedDatetime(string|array<string> $uploaded_datetime) Return ChildEpisode objects filtered by the uploaded_datetime column
+ * @psalm-method Collection&\Traversable<ChildEpisode> findByUploadedDatetime(string|array<string> $uploaded_datetime) Return ChildEpisode objects filtered by the uploaded_datetime column
+ * @method     ChildEpisode[]|Collection findByProcessed(boolean|array<boolean> $processed) Return ChildEpisode objects filtered by the processed column
+ * @psalm-method Collection&\Traversable<ChildEpisode> findByProcessed(boolean|array<boolean> $processed) Return ChildEpisode objects filtered by the processed column
+ * @method     ChildEpisode[]|Collection findByCreatedDatetime(string|array<string> $created_datetime) Return ChildEpisode objects filtered by the created_datetime column
+ * @psalm-method Collection&\Traversable<ChildEpisode> findByCreatedDatetime(string|array<string> $created_datetime) Return ChildEpisode objects filtered by the created_datetime column
+ * @method     ChildEpisode[]|Collection findByProcessedDatetime(string|array<string> $processed_datetime) Return ChildEpisode objects filtered by the processed_datetime column
+ * @psalm-method Collection&\Traversable<ChildEpisode> findByProcessedDatetime(string|array<string> $processed_datetime) Return ChildEpisode objects filtered by the processed_datetime column
  *
  * @method     ChildEpisode[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  * @psalm-method \Propel\Runtime\Util\PropelModelPager&\Traversable<ChildEpisode> paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -187,7 +193,7 @@ abstract class EpisodeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, upload_date, title, description, processed, music FROM episodes WHERE id = :p0';
+        $sql = 'SELECT id, title, description, uploaded_datetime, processed, created_datetime, processed_datetime FROM episodes WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_STR);
@@ -310,51 +316,6 @@ abstract class EpisodeQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the upload_date column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByUploadDate('2011-03-14'); // WHERE upload_date = '2011-03-14'
-     * $query->filterByUploadDate('now'); // WHERE upload_date = '2011-03-14'
-     * $query->filterByUploadDate(array('max' => 'yesterday')); // WHERE upload_date > '2011-03-13'
-     * </code>
-     *
-     * @param mixed $uploadDate The value to use as filter.
-     *              Values can be integers (unix timestamps), DateTime objects, or strings.
-     *              Empty strings are treated as NULL.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this The current query, for fluid interface
-     */
-    public function filterByUploadDate($uploadDate = null, ?string $comparison = null)
-    {
-        if (is_array($uploadDate)) {
-            $useMinMax = false;
-            if (isset($uploadDate['min'])) {
-                $this->addUsingAlias(EpisodeTableMap::COL_UPLOAD_DATE, $uploadDate['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($uploadDate['max'])) {
-                $this->addUsingAlias(EpisodeTableMap::COL_UPLOAD_DATE, $uploadDate['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        $this->addUsingAlias(EpisodeTableMap::COL_UPLOAD_DATE, $uploadDate, $comparison);
-
-        return $this;
-    }
-
-    /**
      * Filter the query on the title column
      *
      * Example usage:
@@ -411,16 +372,18 @@ abstract class EpisodeQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the processed column
+     * Filter the query on the uploaded_datetime column
      *
      * Example usage:
      * <code>
-     * $query->filterByProcessed(1234); // WHERE processed = 1234
-     * $query->filterByProcessed(array(12, 34)); // WHERE processed IN (12, 34)
-     * $query->filterByProcessed(array('min' => 12)); // WHERE processed > 12
+     * $query->filterByUploadedDatetime('2011-03-14'); // WHERE uploaded_datetime = '2011-03-14'
+     * $query->filterByUploadedDatetime('now'); // WHERE uploaded_datetime = '2011-03-14'
+     * $query->filterByUploadedDatetime(array('max' => 'yesterday')); // WHERE uploaded_datetime > '2011-03-13'
      * </code>
      *
-     * @param mixed $processed The value to use as filter.
+     * @param mixed $uploadedDatetime The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -428,16 +391,16 @@ abstract class EpisodeQuery extends ModelCriteria
      *
      * @return $this The current query, for fluid interface
      */
-    public function filterByProcessed($processed = null, ?string $comparison = null)
+    public function filterByUploadedDatetime($uploadedDatetime = null, ?string $comparison = null)
     {
-        if (is_array($processed)) {
+        if (is_array($uploadedDatetime)) {
             $useMinMax = false;
-            if (isset($processed['min'])) {
-                $this->addUsingAlias(EpisodeTableMap::COL_PROCESSED, $processed['min'], Criteria::GREATER_EQUAL);
+            if (isset($uploadedDatetime['min'])) {
+                $this->addUsingAlias(EpisodeTableMap::COL_UPLOADED_DATETIME, $uploadedDatetime['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($processed['max'])) {
-                $this->addUsingAlias(EpisodeTableMap::COL_PROCESSED, $processed['max'], Criteria::LESS_EQUAL);
+            if (isset($uploadedDatetime['max'])) {
+                $this->addUsingAlias(EpisodeTableMap::COL_UPLOADED_DATETIME, $uploadedDatetime['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -448,35 +411,126 @@ abstract class EpisodeQuery extends ModelCriteria
             }
         }
 
+        $this->addUsingAlias(EpisodeTableMap::COL_UPLOADED_DATETIME, $uploadedDatetime, $comparison);
+
+        return $this;
+    }
+
+    /**
+     * Filter the query on the processed column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByProcessed(true); // WHERE processed = true
+     * $query->filterByProcessed('yes'); // WHERE processed = true
+     * </code>
+     *
+     * @param bool|string $processed The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this The current query, for fluid interface
+     */
+    public function filterByProcessed($processed = null, ?string $comparison = null)
+    {
+        if (is_string($processed)) {
+            $processed = in_array(strtolower($processed), array('false', 'off', '-', 'no', 'n', '0', ''), true) ? false : true;
+        }
+
         $this->addUsingAlias(EpisodeTableMap::COL_PROCESSED, $processed, $comparison);
 
         return $this;
     }
 
     /**
-     * Filter the query on the music column
+     * Filter the query on the created_datetime column
      *
      * Example usage:
      * <code>
-     * $query->filterByMusic('fooValue');   // WHERE music = 'fooValue'
-     * $query->filterByMusic('%fooValue%', Criteria::LIKE); // WHERE music LIKE '%fooValue%'
-     * $query->filterByMusic(['foo', 'bar']); // WHERE music IN ('foo', 'bar')
+     * $query->filterByCreatedDatetime('2011-03-14'); // WHERE created_datetime = '2011-03-14'
+     * $query->filterByCreatedDatetime('now'); // WHERE created_datetime = '2011-03-14'
+     * $query->filterByCreatedDatetime(array('max' => 'yesterday')); // WHERE created_datetime > '2011-03-13'
      * </code>
      *
-     * @param string|string[] $music The value to use as filter.
+     * @param mixed $createdDatetime The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
-    public function filterByMusic($music = null, ?string $comparison = null)
+    public function filterByCreatedDatetime($createdDatetime = null, ?string $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($music)) {
+        if (is_array($createdDatetime)) {
+            $useMinMax = false;
+            if (isset($createdDatetime['min'])) {
+                $this->addUsingAlias(EpisodeTableMap::COL_CREATED_DATETIME, $createdDatetime['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdDatetime['max'])) {
+                $this->addUsingAlias(EpisodeTableMap::COL_CREATED_DATETIME, $createdDatetime['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
         }
 
-        $this->addUsingAlias(EpisodeTableMap::COL_MUSIC, $music, $comparison);
+        $this->addUsingAlias(EpisodeTableMap::COL_CREATED_DATETIME, $createdDatetime, $comparison);
+
+        return $this;
+    }
+
+    /**
+     * Filter the query on the processed_datetime column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByProcessedDatetime('2011-03-14'); // WHERE processed_datetime = '2011-03-14'
+     * $query->filterByProcessedDatetime('now'); // WHERE processed_datetime = '2011-03-14'
+     * $query->filterByProcessedDatetime(array('max' => 'yesterday')); // WHERE processed_datetime > '2011-03-13'
+     * </code>
+     *
+     * @param mixed $processedDatetime The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this The current query, for fluid interface
+     */
+    public function filterByProcessedDatetime($processedDatetime = null, ?string $comparison = null)
+    {
+        if (is_array($processedDatetime)) {
+            $useMinMax = false;
+            if (isset($processedDatetime['min'])) {
+                $this->addUsingAlias(EpisodeTableMap::COL_PROCESSED_DATETIME, $processedDatetime['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($processedDatetime['max'])) {
+                $this->addUsingAlias(EpisodeTableMap::COL_PROCESSED_DATETIME, $processedDatetime['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        $this->addUsingAlias(EpisodeTableMap::COL_PROCESSED_DATETIME, $processedDatetime, $comparison);
 
         return $this;
     }
