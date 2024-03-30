@@ -1,0 +1,12 @@
+#/bin/bash
+
+# after git pull, automatically run any propel migrations.
+# to install: 
+#   ln -s /var/www/colinfurzemusic/post-merge.hook /var/www/colinfurzemusic/.git/hooks/post-merge
+#   fill in username & password: nano /var/www/colinfurzemusic/source/credentials.sh
+
+echo "==============================================="
+
+propelDir=/var/www/colinfurzemusic/source/vendor/bin/
+
+php ${propelDir}propel migrate --config-dir=${propelDir}
