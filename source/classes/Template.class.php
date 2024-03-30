@@ -32,6 +32,11 @@ class Template extends Smarty {
 	 * @var array 
 	 */
 	protected $js = array();
+	
+	protected $builtins = [
+	    'strtolower',
+	    'filter_var'
+	];
 
 	public function __construct(string $templatesDir, string $templates_cDir, string $cacheDir, bool $disableCaching = false) {
 		parent::__construct();
@@ -39,10 +44,19 @@ class Template extends Smarty {
 		//$this->registerFilter('pre', array($this, 'prefilter_percentIsset'));
 		//$this->registerFilter('pre', array($this, 'prefilter_doubleCurlies'));
 		
+		$this->registerPlugin('modifier', 's', ['Util', 'S']);
+		$this->registerPlugin('modifier', 'autoversion', ['Util', 'AutoVersion']);
+		
+		
 		$this->setTemplateDir($templatesDir); 
 		$this->setCompileDir($templates_cDir); 
 		$this->setCacheDir($cacheDir); 
 
+		// add back builtin php functions that were removed (eg. $array|var_dump)
+		foreach ($this->builtins as $builtin) {
+			$this->registerPlugin('modifier', $builtin, $builtin); 
+		}
+		
 		// if we're in development mode, always recompile templates
 		if ($disableCaching) {
 			$this->force_compile = true;
