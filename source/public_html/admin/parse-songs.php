@@ -16,6 +16,7 @@ function stripAndAddHTTPS(string $url) {
 }
 
 // places we link to.
+// note there is a similar list in parse-songs.js that controls which domain matches which link place.
 $linkPlaces = [
     'Bandcamp',
     'Facebook',
@@ -34,7 +35,7 @@ $fields = [
     'title',
     'artist',
     'notes',
-    'track'
+    'track_number'
 ];
 
 if (!empty($_POST['id'])) {

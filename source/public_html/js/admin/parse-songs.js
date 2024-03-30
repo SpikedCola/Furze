@@ -1,88 +1,107 @@
+var linkPlaces = {
+	'bandcamp.com': 'Bandcamp',
+	'facebook.com': 'Facebook',
+	'instagram.com': 'Instagram',
+	'music.apple.com': 'iTunes',
+	'soundcloud.com': 'Soundcloud',
+	'spotify.com': 'Spotify',
+	'twitter.com': 'Twitter',
+	'x.com': 'Twitter',
+	'youtube.com': 'YouTube',
+	'youtu.be': 'YouTube'
+};
+
+var currentRow = null;
+
+// look for text between quotes, make into a link.
+function processDescription() {
+	var d = $('#description-raw');
+	// look for quotes on a line-by-line basis.
+	// if there is a mismatch of quotes (and there often is)
+	// we wont make a link out of a a random huge chunk of text.
+	var lines = d.text().split("\n");
+	for (var i in lines) {
+		// make links from quoted text
+		var quotes = lines[i].matchAll(/"([^"]+)"/ig);
+		for (const quote of quotes) {
+			var orig = quote[0];
+			var replacement = '"<a href="#" class="clipboard">'+quote[1]+'</a>"';
+			lines[i] = lines[i].replace(orig, replacement);
+		}
+		// same thing for urls.
+		var links = lines[i].matchAll(/(https?:\/\/[^ ]+)/ig);
+		for (const link of links) {
+			var orig = link[0];
+			var replacement = '<a href="#" class="clipboard">'+link[1]+'</a>';
+			lines[i] = lines[i].replace(orig, replacement);
+		}
+	}
+	//console.log(lines.join("\n"));
+	d.hide();
+	$('#description-parsed').html(lines.join("<br />"));
+}
+processDescription();
+
 // highlight table row on selecting any input in that row. clear other row highlights.
 $(document).on('focus', '#songs input', function() {
-	// remove from any other rows
+	// remove highlighting from any other rows
 	$('#songs').find('.highlight').removeClass('highlight');
-	// add to this row
-	$(this).closest('tr').addClass('highlight');
+	// update currentRow var so we know which row to insert text into.
+	currentRow = $(this).closest('tr');
+	currentRow.addClass('highlight');
 });
 
-// look in description for text between quotes, make into a link.
-
-var d = $('#description');
-
-// look for quotes on a line-by-line basis.
-// if there is a mismatch of quotes (and there often is)
-// we wont make a link out of a a random huge chunk of text.
-var lines = d.text().split("\n");
-for (var i in lines) {
-	// make links from quoted text
-	var quotes = lines[i].matchAll(/"([^"]+)"/ig);
-	for (const quote of quotes) {
-		var orig = quote[0];
-		var replacement = '"<a href="#" class="clipboard">'+quote[1]+'</a>"';
-		lines[i] = lines[i].replace(orig, replacement);
-	}
-	// same thing for links
-	var links = lines[i].matchAll(/(https?:\/\/[^ ]+)/ig);
-	for (const link of links) {
-		var orig = link[0];
-		var replacement = '<a href="#" class="clipboard">'+link[1]+'</a>';
-		lines[i] = lines[i].replace(orig, replacement);
-	}
-}
-//console.log(lines.join("\n"));
-d.hide();
-$('#description2').html(lines.join("<br />"));
-
+// toggle showing the original or parsed description.
 $(document).on('click', '#show-original-btn', function() {
-	$('#description2').hide();
-	$('#description').show();
+	$('#description-raw').toggle();
+	$('#description-parsed').toggle();
 });
 
-/* track which element was last focused, so we know when clicking 
-a .clipboard link where to put text. */
-var currentFocus = null;
-$(document).on('focus', 'input', function() {
-	currentFocus = $(this);
-});
-
-$(document).on('click', '.clipboard', function(e) {
-	console.log(e);
-	e.preventDefault();
+function copyToClipboard(text) {
 	if (!navigator.clipboard) {
 		alert('copy to clipboard requires https');
 		return;
 	}
-	var text = $(this).text();
-	navigator.clipboard.writeText(text).then(() => {
-		console.log('Copied to clipboard.');
-	}, 
-	(err) => {
-		console.log('Failed to copy the text to clipboard.', err);
-	});
-	// if we have a selected row:
-	// if we are in title or artist, copy to them.
-	// otherwise try and copy based on domain.
-	var hl = $('#songs').find('.highlight');
-	if (hl.length) {
-		if (currentFocus) {
-			var title = hl.find('.title');
-			var artist = hl.find('.artist');
-			var notes = hl.find('.notes');
-			if (currentFocus.is(title) && !title.val()) {
-				// copy to title
-				title.val(text);
-				// select artist
-				artist.trigger('focus');
-			}
-			else if (currentFocus.is(artist) && !artist.val()) {
-				// copy to artist
-				artist.val(text);
-				// select notes
-				notes.trigger('focus');
-			}
+	navigator.clipboard.writeText(text).then(
+		() => { }, 
+		(err) => {
+			alert('Failed to copy the text to clipboard: '+ err);
 		}
-		// also check if link text contains one of our external sites,
-		// if so fill in the appropriate box in the selected row.
+	);
+}
+
+// on clicking a link, copy to clipboard, also try and insert directly into the correct input.
+$(document).on('click', '.clipboard', function(e) {
+	e.preventDefault();
+	var text = $(this).text();
+	copyToClipboard(text);
+	if (!currentRow) {
+		return;
+	}
+	// if we have a selected row:
+	var title = currentRow.find('.title');
+	var artist = currentRow.find('.artist');
+	// if title is empty, copy there.
+	if (!title.val()) {
+		title.val(text);
+		// focus artist input, we will fill it in next, helpful if quotes around artist are mismatch.
+		// prevent scrolling down so we dont lose our place on the page.
+		artist.focus({
+		    preventScroll: true
+		});
+		return;
+	}
+	// else if artist is empty, copy there.
+	if (!artist.val()) {
+		artist.val(text);
+		return;
+	}
+	// else try to parse domain and copy to appropriate input (eg. facebook, youtube, etc.)
+	for (var i in linkPlaces) {
+		var target = linkPlaces[i];
+		if (text.includes(i)) {
+			currentRow.find('input.'+target).val(text);
+			return;
+		}
 	}
 });
