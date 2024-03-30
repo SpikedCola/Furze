@@ -25,7 +25,7 @@ $template->wrapper = 'wrapper.tpl';
 $template->css('index.css');
 $template->css('sortable-theme-light.css');
 
-$template->js('https://www.googletagmanager.com/gtag/js?id='.GA_MEASUREMENT_ID);
+$template->js('https://www.googletagmanager.com/gtag/js?id='.GOOGLE_ANALYTICS_MEASUREMENT_ID);
 $template->js('ga.js');
 $template->js('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='.GOOGLE_ADS_CLIENT_ID);
 $template->js('ads.js');
