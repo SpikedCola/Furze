@@ -96,12 +96,13 @@ $todoEps = EpisodeQuery::create()
 $completeEps = EpisodeQuery::create()
 	->filterByProcessed(true) 
 	->count();
-$template->assign('totalEps', $todoEps+$completeEps);
-$template->assign('completeEps', $completeEps);
 
-$template->assign('linkPlaces', $linkPlaces);
-
-$template->assign('ep', $episode);
+$template->assign([
+    'totalEps' => $todoEps+$completeEps,
+    'completeEps' => $completeEps,
+    'linkPlaces' => $linkPlaces,
+    'ep' => $episode
+]);
 
 $template->js('jquery-3.6.0.min.js');
 $template->js('admin/parse-songs.js');
