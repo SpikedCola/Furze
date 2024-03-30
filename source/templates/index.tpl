@@ -9,14 +9,15 @@
 			<th>Song</th>
 			<th>Artist</th>
 			<th>Track #</th>
-			<th>Links</th>
+			<th data-sortable="false">Links</th>
 		</tr>
 	</thead>
 	<tbody>
 		{foreach from=$songs item='song'}
+			{$episode=$song->getEpisode()}
 			<tr>
-				<td><a target="_blank" href="https://youtube.com/watch?v={$song->getEpisode()->getId()}">{$song->getEpisode()->getTitle()}</a></td>
-				<td>{$song->getEpisode()->getUploadDate('Y-m-d')}</td>
+				<td><a target="_blank" href="https://youtube.com/watch?v={$episode->getId()}">{$episode->getTitle()}</a></td>
+				<td>{$episode->getUploadedDatetime('Y-m-d')}</td>
 				<td>{$song->getTitle()}</td>
 				<td>{$song->getArtist()}</td>
 				<td>{$song->getTrackNumber()}</td>
