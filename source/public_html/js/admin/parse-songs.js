@@ -28,15 +28,14 @@ function processDescription() {
 			var replacement = '"<a href="#" class="clipboard">'+quote[1]+'</a>"';
 			lines[i] = lines[i].replace(orig, replacement);
 		}
-		// same thing for urls.
-		var links = lines[i].matchAll(/(https?:\/\/[^ ]+)/ig);
+		// same thing for urls (starting with "http(s)" or "www.")
+		var links = lines[i].matchAll(/(https?:\/\/[^ ]+|www\.[^ ]+)/ig);
 		for (const link of links) {
 			var orig = link[0];
 			var replacement = '<a href="#" class="clipboard">'+link[1]+'</a>';
 			lines[i] = lines[i].replace(orig, replacement);
 		}
 	}
-	//console.log(lines.join("\n"));
 	d.hide();
 	$('#description-parsed').html(lines.join("<br />"));
 }
@@ -73,7 +72,8 @@ function copyToClipboard(text) {
 // on clicking a link, copy to clipboard, also try and insert directly into the correct input.
 $(document).on('click', '.clipboard', function(e) {
 	e.preventDefault();
-	var text = $(this).text();
+	var t = $(this);
+	var text = t.text();
 	copyToClipboard(text);
 	if (!currentRow) {
 		return;
@@ -89,11 +89,13 @@ $(document).on('click', '.clipboard', function(e) {
 		artist.focus({
 		    preventScroll: true
 		});
+		t.remove(); // hide clicked link on setting title.
 		return;
 	}
 	// else if artist is empty, copy there.
 	if (!artist.val()) {
 		artist.val(text);
+		t.remove(); // hide clicked link on setting artist.
 		return;
 	}
 	// else try to parse domain and copy to appropriate input (eg. facebook, youtube, etc.)
@@ -101,6 +103,7 @@ $(document).on('click', '.clipboard', function(e) {
 		var target = linkPlaces[i];
 		if (text.includes(i)) {
 			currentRow.find('input.'+target).val(text);
+			t.remove(); // hide clicked link on successfully finding it.
 			return;
 		}
 	}
