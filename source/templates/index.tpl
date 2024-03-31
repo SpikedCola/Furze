@@ -7,6 +7,9 @@
 <p>
 	Want a list of all the songs for yourself, along with all the links to Spotify, iTunes, etc.? <a href="/download">Click here to download the list for yourself</a>.
 </p>
+<p>
+	Questions? Corrections? <a href="mailto:info@colinfurzemusic.com">Contact</a>
+</p>
 <hr />
 {* sortable-theme-light class name must match theme's css file*}
 <table data-sortable class="sortable-theme-light main-table"> 
@@ -47,7 +50,3 @@
 		{/foreach}
 	</tbody>
 </table>
-<hr />
-<footer>
-	<a href="mailto:info@colinfurzemusic.com">Contact</a>
-</footer>
