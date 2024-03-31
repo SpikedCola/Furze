@@ -35,7 +35,8 @@ class Template extends Smarty {
 	
 	protected $builtins = [
 	    'strtolower',
-	    'filter_var'
+	    'filter_var',
+	    'count'
 	];
 
 	public function __construct(string $templatesDir, string $templates_cDir, string $cacheDir, bool $disableCaching = false) {

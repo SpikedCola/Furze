@@ -1,9 +1,9 @@
 <h1>Episodes to be processed</h1>
-{if $episodesToProcess}
+{if $episodesToProcess|count}
 	<ul>
-	{foreach from=$episodesToProcess item='ep'}
-		<li>{$ep->getTitle()}</li>
-	{/foreach}
+		{foreach from=$episodesToProcess item='ep'}
+			<li>{$ep->getTitle()}</li>
+		{/foreach}
 	</ul>
 	<br />
 	<a href="parse-songs" />Process</a>
