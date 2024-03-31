@@ -15,21 +15,6 @@ function stripAndAddHTTPS(string $url) {
 	return 'https://'.str_replace(['http://', 'https://'], '', $url);
 }
 
-// places we link to.
-// note there is a similar list in parse-songs.js that controls which domain matches which link place.
-$linkPlaces = [
-    'Bandcamp',
-    'Facebook',
-    'Instagram',
-    'iTunes',
-    'Soundcloud',
-    'Spotify',
-    'Twitter',
-    'YouTube',
-    'Website',
-    'Label'
-];
-
 // field on Song that can be set.
 $fields = [
     'title',
@@ -37,6 +22,7 @@ $fields = [
     'notes',
     'track_number'
 ];
+$providers = SongLink::PROVIDERS;
 
 if (!empty($_POST['id'])) {
 	$id = $_POST['id'];
@@ -54,15 +40,15 @@ if (!empty($_POST['id'])) {
 			}
 		}
 
-		foreach ($linkPlaces as $place) {
+		foreach ($providers as $provider) {
 			$url = null;
-			if (isset($post[$place])) {
-				$url = trim($post[$place]);
+			if (isset($post[$provider])) {
+				$url = trim($post[$provider]);
 			}
 			if ($url) {
 				$link = new SongLink();
 				$link->setUrl(stripAndAddHTTPS($url));
-				$link->setTitle($place);
+				$link->setTitle($provider);
 				$song->addSongLink($link);
 			}
 		}
@@ -81,14 +67,16 @@ if (!empty($_POST['id'])) {
 		->setProcessed(true)
 		->save();
 	// redirect so we dont accidentally refresh and duplicate data
-	header('Location: /admin/parse-songs'); 
-	die;
+	Util::Redirect('/admin/parse-songs');
 }
 
 // get next ep to work on
 $episode = EpisodeQuery::create()
 	->filterByProcessed(false)
 	->findOne();
+if (!$episode) {
+	Util::Redirect('/admin/');
+}
 
 // stats for progress bar
 $todoEps = EpisodeQuery::create()
@@ -101,8 +89,8 @@ $completeEps = EpisodeQuery::create()
 $template->assign([
     'totalEps' => $todoEps+$completeEps,
     'completeEps' => $completeEps,
-    'linkPlaces' => $linkPlaces,
-    'ep' => $episode
+    'ep' => $episode,
+    'providers' => $providers
 ]);
 
 $template->js('jquery-3.6.0.min.js');

@@ -1,5 +1,12 @@
 <h1>Colin Furze Music</h1>
-<p>There's a lot of really excellent music throughout <a target="_blank" href="https://www.youtube.com/user/colinfurze">Colin Furze</a>'s videos. I decided to put it all in one place, so more people can enjoy it. Colin lists some of the music on his site, but it's a little out of date. I hope you find something that you like!</p>
+<p>
+	There's a lot of really excellent music throughout <a target="_blank" href="https://www.youtube.com/user/colinfurze">Colin Furze</a>'s videos. 
+	I decided to put it all in one place, so more people can enjoy it. Colin lists some of the music on his site, but it's a little out of date. 
+	I hope you find something that you like!
+</p>
+<p>
+	Want a list of all the songs for yourself, along with all the links to Spotify, iTunes, etc.? <a href="/download">Click here to download the list for yourself</a>.
+</p>
 <hr />
 {* sortable-theme-light class name must match theme's css file*}
 <table data-sortable class="sortable-theme-light main-table"> 
@@ -24,22 +31,15 @@
 				<td>{$song->getTrackNumber()}</td>
 				<td>
 					{foreach from=$song->getSongLinks() item='link'}
-						{* note to self: make sure there is 1 image per title entry in the db *}
-						{assign var='title' value=$link->getTitle()}
-						{* a few overrides.. ublock will block youtube.png facebook.png etc. need to hide it a bit *}
-						{assign var='image' value=$title|strtolower}
-						{if 'youtube' === $image}
-							{assign var='image' value='yt'}
-						{elseif 'facebook' === $image}
-							{assign var='image' value='fb'}
-						{elseif 'instagram' === $image}
-							{assign var='image' value='ig'}
-						{elseif 'twitter' === $image}
-							{assign var='image' value='tw'}
-						{/if}
-						{* ublock also blocks youtube, facebook, etc links. bounce through us first i guess. *} 
-						<a target="_blank" class="link" href="out?id={$link->getTag()}">
-							<img class="link-img" src="/images/links/{$image}.png" alt="{$title}" title="{$title}" />
+						{* ublock blocks youtube, facebook, etc links. bounce through us first i guess. *} 
+						{* ublock also blocks youtube.png facebook.png etc. need to hide it a bit so the images show. *}
+						<a target="_blank" class="link" href="/out?id={$link->getTag()}">
+							<img 
+								class="link-img" 
+								src="/images/links/{$link->getImage()}" 
+								alt="{$link->getTitle()|htmlentities}" 
+								title="{$link->getTitle()|htmlentities}" 
+							/>
 						</a>
 					{/foreach}
 				</td>
